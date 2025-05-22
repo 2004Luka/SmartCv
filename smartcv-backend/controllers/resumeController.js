@@ -60,16 +60,21 @@ exports.createResume = async (req, res) => {
 // Get all resumes for the current user
 exports.getResumes = async (req, res) => {
   try {
+    console.log('Fetching resumes for user:', req.user._id); // Debug log
+    
     const resumes = await Resume.find({ user: req.user._id });
+    console.log('Found resumes:', resumes); // Debug log
+    
     res.status(200).json({
       success: true,
       count: resumes.length,
       data: resumes
     });
   } catch (error) {
+    console.error('Error fetching resumes:', error); // Debug log
     res.status(400).json({
       success: false,
-      error: error.message
+      error: error.message || 'Failed to fetch resumes'
     });
   }
 };

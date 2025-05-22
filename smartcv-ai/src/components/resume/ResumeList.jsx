@@ -1,27 +1,38 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const ResumeList = ({ onEdit, onDelete }) => {
+  const navigate = useNavigate();
   const [resumes, setResumes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchResumes = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/resumes', {
-          withCredentials: true
-        });
-        setResumes(response.data.data);
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to fetch resumes');
-        setLoading(false);
-      }
-    };
+  const fetchResumes = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/resumes', {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log('Fetched resumes:', response.data); // Debug log
+      setResumes(response.data.data);
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching resumes:', err); // Debug log
+      setError('Failed to fetch resumes');
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchResumes();
   }, []);
+
+  const handleView = (resumeId) => {
+    navigate(`/resume/${resumeId}`);
+  };
 
   if (loading) {
     return (
@@ -74,6 +85,12 @@ const ResumeList = ({ onEdit, onDelete }) => {
               {new Date(resume.updatedAt).toLocaleDateString()}
             </span>
             <div className="space-x-2">
+              <button
+                onClick={() => handleView(resume._id)}
+                className="text-green-600 hover:text-green-800"
+              >
+                View
+              </button>
               <button
                 onClick={() => onEdit(resume)}
                 className="text-blue-600 hover:text-blue-800"

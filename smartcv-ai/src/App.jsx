@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import ResumeView from './components/resume/ResumeView';
 
 function App() {
   return (
@@ -38,6 +39,14 @@ function App() {
                   <Dashboard />
                 </ProtectedRoute>
               } 
+            />
+            <Route
+              path="/resume/:id"
+              element={
+                <ProtectedRoute>
+                  <ResumeView />
+                </ProtectedRoute>
+              }
             />
           </Routes>
         </div>

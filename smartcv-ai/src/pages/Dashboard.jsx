@@ -48,7 +48,7 @@ const Dashboard = () => {
               </p>
             </div>
             <button
-              className="btn-primary"
+              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
               onClick={() => setShowResumeForm(true)}
             >
               Create New Resume
@@ -66,7 +66,7 @@ const Dashboard = () => {
               onClick={() => setActiveTab('resumes')}
               className={`${
                 activeTab === 'resumes'
-                  ? 'border-primary-500 text-primary-600'
+                  ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
             >
@@ -76,7 +76,7 @@ const Dashboard = () => {
               onClick={() => setActiveTab('templates')}
               className={`${
                 activeTab === 'templates'
-                  ? 'border-primary-500 text-primary-600'
+                  ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
             >
@@ -86,7 +86,7 @@ const Dashboard = () => {
               onClick={() => setActiveTab('settings')}
               className={`${
                 activeTab === 'settings'
-                  ? 'border-primary-500 text-primary-600'
+                  ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
             >
@@ -98,14 +98,8 @@ const Dashboard = () => {
         {/* Tab Content */}
         <div className="mt-8">
           {activeTab === 'resumes' && (
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-semibold text-gray-800">My Resumes</h2>
-              <button
-                onClick={() => setShowResumeForm(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
-              >
-                Create New Resume
-              </button>
+            <div>
+              <ResumeList onEdit={handleEditResume} onDelete={handleDeleteResume} />
             </div>
           )}
 
@@ -148,6 +142,7 @@ const Dashboard = () => {
                       type="text"
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                       placeholder="Your name"
+                      defaultValue={user?.name}
                     />
                   </div>
                   <div>
@@ -157,6 +152,7 @@ const Dashboard = () => {
                       disabled
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-50"
                       placeholder="Your email"
+                      defaultValue={user?.email}
                     />
                   </div>
                   <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
