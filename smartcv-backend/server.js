@@ -3,16 +3,23 @@ const mongoose = require('mongoose')
 
 const cors = require('cors')
 const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://localhost:5173'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/resumes', require('./routes/resume'));
 
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to SmartCV AI Backend' });

@@ -5,6 +5,7 @@ import Navbar from './components/layout/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
@@ -34,7 +35,7 @@ function App() {
               path="/dashboard" 
               element={
                 <ProtectedRoute>
-                  <div>Dashboard (Coming Soon)</div>
+                  <Dashboard />
                 </ProtectedRoute>
               } 
             />
