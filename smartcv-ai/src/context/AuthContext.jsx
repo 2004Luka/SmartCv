@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email, password, rememberMe = false) => {
     try {
       const response = await axios.post('http://localhost:5000/api/auth/login', {
         email,
@@ -33,9 +33,10 @@ export const AuthProvider = ({ children }) => {
 
       const { token, user } = response.data;
       
-      // Set cookies with expiration
-      Cookies.set('token', token, { expires: 7 }); // 7 days
-      Cookies.set('user', JSON.stringify(user), { expires: 7 });
+      // Set cookies with expiration based on remember me
+      const expires = rememberMe ? 30 : 1; // 30 days if remember me is checked, 1 day if not
+      Cookies.set('token', token, { expires });
+      Cookies.set('user', JSON.stringify(user), { expires });
       
       // Set axios default header
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -60,9 +61,9 @@ export const AuthProvider = ({ children }) => {
 
       const { token, user } = response.data;
       
-      // Set cookies with expiration
-      Cookies.set('token', token, { expires: 7 });
-      Cookies.set('user', JSON.stringify(user), { expires: 7 });
+      // Set cookies with default expiration (1 day)
+      Cookies.set('token', token, { expires: 1 });
+      Cookies.set('user', JSON.stringify(user), { expires: 1 });
       
       // Set axios default header
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
