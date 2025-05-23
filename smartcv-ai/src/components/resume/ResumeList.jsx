@@ -1,27 +1,27 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import ResumeForm from './ResumeForm';
 
-const ResumeList = ({ onEdit, onDelete }) => {
-  const navigate = useNavigate();
+const ResumeList = () => {
   const [resumes, setResumes] = useState([]);
+  const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [resumeToDelete, setResumeToDelete] = useState(null);
+  const navigate = useNavigate();
 
   const fetchResumes = async () => {
     try {
       const response = await axios.get('http://localhost:5000/api/resumes', {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        withCredentials: true
       });
-      console.log('Fetched resumes:', response.data); // Debug log
       setResumes(response.data.data);
-      setLoading(false);
-    } catch (err) {
-      console.error('Error fetching resumes:', err); // Debug log
+    } catch (error) {
       setError('Failed to fetch resumes');
+      console.error('Error fetching resumes:', error);
+    } finally {
       setLoading(false);
     }
   };
@@ -30,83 +30,134 @@ const ResumeList = ({ onEdit, onDelete }) => {
     fetchResumes();
   }, []);
 
-  const handleView = (resumeId) => {
-    navigate(`/resume/${resumeId}`);
+  const handleEdit = (resume) => {
+    setShowForm(true);
+  };
+
+  const handleView = (id) => {
+    navigate(`/resumes/${id}`);
+  };
+
+  const handleDelete = (resume) => {
+    setResumeToDelete(resume);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:5000/api/resumes/${resumeToDelete._id}`, {
+        withCredentials: true
+      });
+      setResumes(resumes.filter(r => r._id !== resumeToDelete._id));
+      setShowDeleteConfirm(false);
+      setResumeToDelete(null);
+    } catch (error) {
+      console.error('Error deleting resume:', error);
+      setError('Failed to delete resume');
+    }
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-      </div>
-    );
+    return <div className="text-center">Loading...</div>;
   }
 
   if (error) {
-    return (
-      <div className="text-red-500 text-center p-4">
-        {error}
-      </div>
-    );
-  }
-
-  if (resumes.length === 0) {
-    return (
-      <div className="text-center p-8">
-        <p className="text-gray-500">No resumes found. Create your first resume!</p>
-      </div>
-    );
+    return <div className="text-center text-red-600">{error}</div>;
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {resumes.map((resume) => (
-        <div
-          key={resume._id}
-          className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">My Resumes</h1>
+        <button
+          onClick={() => setShowForm(true)}
+          className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
         >
-          <h3 className="text-xl font-semibold mb-2">{resume.title}</h3>
-          <p className="text-gray-600 mb-4">{resume.jobTitle}</p>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {resume.skills.slice(0, 3).map((skill, index) => (
-              <span
-                key={index}
-                className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded"
-              >
-                {skill}
-              </span>
-            ))}
-            {resume.skills.length > 3 && (
-              <span className="text-gray-500 text-sm">+{resume.skills.length - 3} more</span>
-            )}
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-500">
-              {new Date(resume.updatedAt).toLocaleDateString()}
-            </span>
-            <div className="space-x-2">
-              <button
-                onClick={() => handleView(resume._id)}
-                className="text-green-600 hover:text-green-800"
-              >
-                View
-              </button>
-              <button
-                onClick={() => onEdit(resume)}
-                className="text-blue-600 hover:text-blue-800"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => onDelete(resume._id)}
-                className="text-red-600 hover:text-red-800"
-              >
-                Delete
-              </button>
+          Create New Resume
+        </button>
+      </div>
+
+      {resumes.length === 0 ? (
+        <div className="text-center text-gray-500">
+          No resumes found. Create your first resume!
+        </div>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {resumes.map((resume) => (
+            <div
+              key={resume._id}
+              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+            >
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">{resume.title}</h2>
+              <p className="text-gray-600 mb-4">{resume.jobTitle}</p>
+              <div className="flex justify-between items-center">
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleView(resume._id)}
+                    className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                  >
+                    View
+                  </button>
+                  <button
+                    onClick={() => handleEdit(resume)}
+                    className="px-3 py-1 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(resume)}
+                    className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {showForm && (
+        <ResumeForm
+          onClose={() => {
+            setShowForm(false);
+            fetchResumes();
+          }}
+        />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div className="mt-3 text-center">
+              <h3 className="text-lg leading-6 font-medium text-gray-900">Delete Resume</h3>
+              <div className="mt-2 px-7 py-3">
+                <p className="text-sm text-gray-500">
+                  Are you sure you want to delete "{resumeToDelete?.title}"? This action cannot be undone.
+                </p>
+              </div>
+              <div className="flex justify-center gap-4 mt-4">
+                <button
+                  onClick={() => {
+                    setShowDeleteConfirm(false);
+                    setResumeToDelete(null);
+                  }}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      ))}
+      )}
     </div>
   );
 };

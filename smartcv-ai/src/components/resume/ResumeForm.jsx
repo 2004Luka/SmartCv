@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const ResumeForm = ({ onClose, resume }) => {
-  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState(resume || {
     title: '',
@@ -120,7 +118,7 @@ const ResumeForm = ({ onClose, resume }) => {
           {/* Progress Steps */}
           <div className="mb-8">
             <div className="flex items-center justify-between">
-              {['Basic Info', 'Experience', 'Education', 'Skills', 'Template'].map((label, index) => (
+              {['Basic Info', 'Experience', 'Education', 'Skills'].map((label, index) => (
                 <div key={label} className="flex items-center">
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center ${
@@ -134,7 +132,7 @@ const ResumeForm = ({ onClose, resume }) => {
                     {index + 1}
                   </div>
                   <span className="ml-2 text-sm font-medium text-gray-900">{label}</span>
-                  {index < 4 && (
+                  {index < 3 && (
                     <div className="w-24 h-1 mx-4 bg-gray-200">
                       <div
                         className="h-full bg-primary-600"
@@ -380,29 +378,6 @@ const ResumeForm = ({ onClose, resume }) => {
               </div>
             )}
 
-            {step === 5 && (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-                  {['professional', 'creative', 'executive'].map((template) => (
-                    <div
-                      key={template}
-                      className={`p-4 border rounded-lg cursor-pointer ${
-                        formData.template === template ? 'border-primary-500 ring-2 ring-primary-500' : ''
-                      }`}
-                      onClick={() => setFormData({ ...formData, template })}
-                    >
-                      <h3 className="text-lg font-medium capitalize">{template}</h3>
-                      <p className="mt-1 text-sm text-gray-500">
-                        {template === 'professional' && 'Clean and professional design suitable for most industries.'}
-                        {template === 'creative' && 'Modern and creative design for creative industries.'}
-                        {template === 'executive' && 'Sophisticated design for executive positions.'}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
             <div className="mt-8 flex justify-between">
               {step > 1 && (
                 <button
@@ -413,7 +388,7 @@ const ResumeForm = ({ onClose, resume }) => {
                   Previous
                 </button>
               )}
-              {step < 5 ? (
+              {step < 4 ? (
                 <button
                   type="button"
                   onClick={() => setStep(step + 1)}

@@ -18,8 +18,16 @@ export const AuthProvider = ({ children }) => {
     const userData = Cookies.get('user');
     
     if (token && userData) {
-      setUser(JSON.parse(userData));
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      try {
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        // Clear invalid data
+        Cookies.remove('token');
+        Cookies.remove('user');
+      }
     }
     setLoading(false);
   }, []);
