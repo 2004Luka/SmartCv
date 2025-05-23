@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import AIResumeSuggestions from './AIResumeSuggestions';
 
 const ResumeForm = ({ onClose, resume }) => {
   const [step, setStep] = useState(1);
@@ -98,6 +99,34 @@ const ResumeForm = ({ onClose, resume }) => {
     }
   };
 
+  const handleApplySuggestion = (section, suggestion) => {
+    if (section === 'summary') {
+      setFormData(prev => ({
+        ...prev,
+        summary: suggestion
+      }));
+    } else if (section === 'experience') {
+      // Find the most relevant experience entry to update
+      const updatedExperience = [...formData.experience];
+      updatedExperience[0] = {
+        ...updatedExperience[0],
+        description: suggestion
+      };
+      setFormData(prev => ({
+        ...prev,
+        experience: updatedExperience
+      }));
+    } else if (section === 'skills') {
+      // Add new skills while avoiding duplicates
+      const currentSkills = new Set(formData.skills);
+      suggestion.forEach(skill => currentSkills.add(skill));
+      setFormData(prev => ({
+        ...prev,
+        skills: Array.from(currentSkills)
+      }));
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -145,267 +174,277 @@ const ResumeForm = ({ onClose, resume }) => {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit}>
-            {step === 1 && (
-              <div className="space-y-6">
-                <div>
-                  <label htmlFor="title" className="form-label">Resume Title</label>
-                  <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    className="input-field"
-                    value={formData.title}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="jobTitle" className="form-label">Target Job Title</label>
-                  <input
-                    type="text"
-                    id="jobTitle"
-                    name="jobTitle"
-                    className="input-field"
-                    value={formData.jobTitle}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="summary" className="form-label">Professional Summary</label>
-                  <textarea
-                    id="summary"
-                    name="summary"
-                    rows="4"
-                    className="input-field"
-                    value={formData.summary}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              </div>
-            )}
-
-            {step === 2 && (
-              <div className="space-y-6">
-                {formData.experience.map((exp, index) => (
-                  <div key={index} className="p-4 border rounded-lg">
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-lg font-medium">Experience {index + 1}</h3>
-                      {index > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => removeItem('experience', index)}
-                          className="text-red-600 hover:text-red-800"
-                        >
-                          Remove
-                        </button>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                      <div>
-                        <label className="form-label">Company</label>
-                        <input
-                          type="text"
-                          name="company"
-                          className="input-field"
-                          value={exp.company}
-                          onChange={(e) => handleChange(e, index, 'experience')}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="form-label">Position</label>
-                        <input
-                          type="text"
-                          name="position"
-                          className="input-field"
-                          value={exp.position}
-                          onChange={(e) => handleChange(e, index, 'experience')}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="form-label">Start Date</label>
-                        <input
-                          type="date"
-                          name="startDate"
-                          className="input-field"
-                          value={exp.startDate}
-                          onChange={(e) => handleChange(e, index, 'experience')}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="form-label">End Date</label>
-                        <input
-                          type="date"
-                          name="endDate"
-                          className="input-field"
-                          value={exp.endDate}
-                          onChange={(e) => handleChange(e, index, 'experience')}
-                        />
-                      </div>
-                    </div>
-                    <div className="mt-4">
-                      <label className="form-label">Description</label>
-                      <textarea
-                        name="description"
-                        rows="3"
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+              <form onSubmit={handleSubmit}>
+                {step === 1 && (
+                  <div className="space-y-6">
+                    <div>
+                      <label htmlFor="title" className="form-label">Resume Title</label>
+                      <input
+                        type="text"
+                        id="title"
+                        name="title"
                         className="input-field"
-                        value={exp.description}
-                        onChange={(e) => handleChange(e, index, 'experience')}
+                        value={formData.title}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="jobTitle" className="form-label">Target Job Title</label>
+                      <input
+                        type="text"
+                        id="jobTitle"
+                        name="jobTitle"
+                        className="input-field"
+                        value={formData.jobTitle}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="summary" className="form-label">Professional Summary</label>
+                      <textarea
+                        id="summary"
+                        name="summary"
+                        rows="4"
+                        className="input-field"
+                        value={formData.summary}
+                        onChange={handleChange}
                         required
                       />
                     </div>
                   </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => addItem('experience')}
-                  className="btn-secondary w-full"
-                >
-                  Add Experience
-                </button>
-              </div>
-            )}
+                )}
 
-            {step === 3 && (
-              <div className="space-y-6">
-                {formData.education.map((edu, index) => (
-                  <div key={index} className="p-4 border rounded-lg">
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-lg font-medium">Education {index + 1}</h3>
-                      {index > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => removeItem('education', index)}
-                          className="text-red-600 hover:text-red-800"
-                        >
-                          Remove
-                        </button>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                      <div>
-                        <label className="form-label">School</label>
-                        <input
-                          type="text"
-                          name="school"
-                          className="input-field"
-                          value={edu.school}
-                          onChange={(e) => handleChange(e, index, 'education')}
-                          required
-                        />
+                {step === 2 && (
+                  <div className="space-y-6">
+                    {formData.experience.map((exp, index) => (
+                      <div key={index} className="p-4 border rounded-lg">
+                        <div className="flex justify-between items-center mb-4">
+                          <h3 className="text-lg font-medium">Experience {index + 1}</h3>
+                          {index > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => removeItem('experience', index)}
+                              className="text-red-600 hover:text-red-800"
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </div>
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                          <div>
+                            <label className="form-label">Company</label>
+                            <input
+                              type="text"
+                              name="company"
+                              className="input-field"
+                              value={exp.company}
+                              onChange={(e) => handleChange(e, index, 'experience')}
+                              required
+                            />
+                          </div>
+                          <div>
+                            <label className="form-label">Position</label>
+                            <input
+                              type="text"
+                              name="position"
+                              className="input-field"
+                              value={exp.position}
+                              onChange={(e) => handleChange(e, index, 'experience')}
+                              required
+                            />
+                          </div>
+                          <div>
+                            <label className="form-label">Start Date</label>
+                            <input
+                              type="date"
+                              name="startDate"
+                              className="input-field"
+                              value={exp.startDate}
+                              onChange={(e) => handleChange(e, index, 'experience')}
+                              required
+                            />
+                          </div>
+                          <div>
+                            <label className="form-label">End Date</label>
+                            <input
+                              type="date"
+                              name="endDate"
+                              className="input-field"
+                              value={exp.endDate}
+                              onChange={(e) => handleChange(e, index, 'experience')}
+                            />
+                          </div>
+                        </div>
+                        <div className="mt-4">
+                          <label className="form-label">Description</label>
+                          <textarea
+                            name="description"
+                            rows="3"
+                            className="input-field"
+                            value={exp.description}
+                            onChange={(e) => handleChange(e, index, 'experience')}
+                            required
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <label className="form-label">Degree</label>
-                        <input
-                          type="text"
-                          name="degree"
-                          className="input-field"
-                          value={edu.degree}
-                          onChange={(e) => handleChange(e, index, 'education')}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="form-label">Field of Study</label>
-                        <input
-                          type="text"
-                          name="field"
-                          className="input-field"
-                          value={edu.field}
-                          onChange={(e) => handleChange(e, index, 'education')}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="form-label">Graduation Date</label>
-                        <input
-                          type="date"
-                          name="graduationDate"
-                          className="input-field"
-                          value={edu.graduationDate}
-                          onChange={(e) => handleChange(e, index, 'education')}
-                          required
-                        />
-                      </div>
-                    </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => addItem('experience')}
+                      className="btn-secondary w-full"
+                    >
+                      Add Experience
+                    </button>
                   </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => addItem('education')}
-                  className="btn-secondary w-full"
-                >
-                  Add Education
-                </button>
-              </div>
-            )}
+                )}
 
-            {step === 4 && (
-              <div className="space-y-6">
-                {formData.skills.map((skill, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      className="input-field flex-1"
-                      value={skill}
-                      onChange={(e) => handleSkillChange(index, e.target.value)}
-                      placeholder="Enter a skill"
-                      required
-                    />
-                    {index > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => removeSkill(index)}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        Remove
-                      </button>
-                    )}
+                {step === 3 && (
+                  <div className="space-y-6">
+                    {formData.education.map((edu, index) => (
+                      <div key={index} className="p-4 border rounded-lg">
+                        <div className="flex justify-between items-center mb-4">
+                          <h3 className="text-lg font-medium">Education {index + 1}</h3>
+                          {index > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => removeItem('education', index)}
+                              className="text-red-600 hover:text-red-800"
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </div>
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                          <div>
+                            <label className="form-label">School</label>
+                            <input
+                              type="text"
+                              name="school"
+                              className="input-field"
+                              value={edu.school}
+                              onChange={(e) => handleChange(e, index, 'education')}
+                              required
+                            />
+                          </div>
+                          <div>
+                            <label className="form-label">Degree</label>
+                            <input
+                              type="text"
+                              name="degree"
+                              className="input-field"
+                              value={edu.degree}
+                              onChange={(e) => handleChange(e, index, 'education')}
+                              required
+                            />
+                          </div>
+                          <div>
+                            <label className="form-label">Field of Study</label>
+                            <input
+                              type="text"
+                              name="field"
+                              className="input-field"
+                              value={edu.field}
+                              onChange={(e) => handleChange(e, index, 'education')}
+                              required
+                            />
+                          </div>
+                          <div>
+                            <label className="form-label">Graduation Date</label>
+                            <input
+                              type="date"
+                              name="graduationDate"
+                              className="input-field"
+                              value={edu.graduationDate}
+                              onChange={(e) => handleChange(e, index, 'education')}
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => addItem('education')}
+                      className="btn-secondary w-full"
+                    >
+                      Add Education
+                    </button>
                   </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={addSkill}
-                  className="btn-secondary w-full"
-                >
-                  Add Skill
-                </button>
-              </div>
-            )}
+                )}
 
-            <div className="mt-8 flex justify-between">
-              {step > 1 && (
-                <button
-                  type="button"
-                  onClick={() => setStep(step - 1)}
-                  className="btn-secondary"
-                >
-                  Previous
-                </button>
-              )}
-              {step < 4 ? (
-                <button
-                  type="button"
-                  onClick={() => setStep(step + 1)}
-                  className="btn-primary ml-auto"
-                >
-                  Next
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  className="btn-primary ml-auto"
-                >
-                  Create Resume
-                </button>
-              )}
+                {step === 4 && (
+                  <div className="space-y-6">
+                    {formData.skills.map((skill, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          className="input-field flex-1"
+                          value={skill}
+                          onChange={(e) => handleSkillChange(index, e.target.value)}
+                          placeholder="Enter a skill"
+                          required
+                        />
+                        {index > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => removeSkill(index)}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={addSkill}
+                      className="btn-secondary w-full"
+                    >
+                      Add Skill
+                    </button>
+                  </div>
+                )}
+
+                <div className="mt-8 flex justify-between">
+                  {step > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => setStep(step - 1)}
+                      className="btn-secondary"
+                    >
+                      Previous
+                    </button>
+                  )}
+                  {step < 4 ? (
+                    <button
+                      type="button"
+                      onClick={() => setStep(step + 1)}
+                      className="btn-primary ml-auto"
+                    >
+                      Next
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      className="btn-primary ml-auto"
+                    >
+                      Create Resume
+                    </button>
+                  )}
+                </div>
+              </form>
             </div>
-          </form>
+            <div>
+              <AIResumeSuggestions
+                resume={formData}
+                onApplySuggestion={handleApplySuggestion}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
