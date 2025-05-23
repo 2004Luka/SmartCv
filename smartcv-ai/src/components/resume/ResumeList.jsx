@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ResumeForm from './ResumeForm';
+import { useAuth } from '../../context/AuthContext';
 
 const ResumeList = () => {
   const [resumes, setResumes] = useState([]);
@@ -11,24 +12,37 @@ const ResumeList = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [resumeToDelete, setResumeToDelete] = useState(null);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const fetchResumes = async () => {
     try {
+      const token = localStorage.getItem('token');
       const response = await axios.get('http://localhost:5000/api/resumes', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         withCredentials: true
       });
       setResumes(response.data.data);
     } catch (error) {
       setError('Failed to fetch resumes');
       console.error('Error fetching resumes:', error);
+      if (error.response?.status === 401) {
+        // Redirect to login if unauthorized
+        navigate('/login');
+      }
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchResumes();
-  }, []);
+    if (user) {
+      fetchResumes();
+    } else {
+      navigate('/login');
+    }
+  }, [user, navigate]);
 
   const handleEdit = (resume) => {
     setShowForm(true);

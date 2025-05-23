@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Check for existing session on mount
-    const token = Cookies.get('token');
+    const token = Cookies.get('token') || localStorage.getItem('token');
     const userData = Cookies.get('user');
     
     if (token && userData) {
@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }) => {
         console.error('Error parsing user data:', error);
         // Clear invalid data
         Cookies.remove('token');
+        localStorage.removeItem('token');
         Cookies.remove('user');
       }
     }
@@ -44,6 +45,7 @@ export const AuthProvider = ({ children }) => {
       // Set cookies with expiration based on remember me
       const expires = rememberMe ? 30 : 1; // 30 days if remember me is checked, 1 day if not
       Cookies.set('token', token, { expires });
+      localStorage.setItem('token', token);
       Cookies.set('user', JSON.stringify(user), { expires });
       
       // Set axios default header
@@ -71,6 +73,7 @@ export const AuthProvider = ({ children }) => {
       
       // Set cookies with default expiration (1 day)
       Cookies.set('token', token, { expires: 1 });
+      localStorage.setItem('token', token);
       Cookies.set('user', JSON.stringify(user), { expires: 1 });
       
       // Set axios default header
@@ -87,8 +90,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    // Remove cookies
+    // Remove cookies and localStorage
     Cookies.remove('token');
+    localStorage.removeItem('token');
     Cookies.remove('user');
     
     // Remove axios default header

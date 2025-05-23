@@ -8,9 +8,17 @@ const ResumeForm = ({ onClose, resume }) => {
     title: '',
     jobTitle: '',
     summary: '',
+    contact: {
+      email: '',
+      phone: '',
+      website: '',
+      location: ''
+    },
     experience: [{ company: '', position: '', startDate: '', endDate: '', description: '' }],
-    education: [{ school: '', degree: '', field: '', graduationDate: '' }],
+    education: [{ school: '', degree: '', field: '', graduationDate: '', gpa: '' }],
     skills: [''],
+    languages: [{ name: '', proficiency: 'Basic' }],
+    references: [{ name: '', position: '', company: '', phone: '', email: '' }],
     template: 'professional'
   });
 
@@ -127,6 +135,24 @@ const ResumeForm = ({ onClose, resume }) => {
     }
   };
 
+  const addLanguage = () => {
+    setFormData({ ...formData, languages: [...formData.languages, { name: '', proficiency: 'Basic' }] });
+  };
+
+  const removeLanguage = (index) => {
+    const newLanguages = formData.languages.filter((_, i) => i !== index);
+    setFormData({ ...formData, languages: newLanguages });
+  };
+
+  const addReference = () => {
+    setFormData({ ...formData, references: [...formData.references, { name: '', position: '', company: '', phone: '', email: '' }] });
+  };
+
+  const removeReference = (index) => {
+    const newReferences = formData.references.filter((_, i) => i !== index);
+    setFormData({ ...formData, references: newReferences });
+  };
+
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -214,6 +240,55 @@ const ResumeForm = ({ onClose, resume }) => {
                         onChange={handleChange}
                         required
                       />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
+                      <div className="space-y-4">
+                        <div>
+                          <label htmlFor="email" className="form-label">Email</label>
+                          <input
+                            type="email"
+                            id="email"
+                            name="contact.email"
+                            className="input-field"
+                            value={formData.contact.email}
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="phone" className="form-label">Phone</label>
+                          <input
+                            type="tel"
+                            id="phone"
+                            name="contact.phone"
+                            className="input-field"
+                            value={formData.contact.phone}
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="website" className="form-label">Website</label>
+                          <input
+                            type="url"
+                            id="website"
+                            name="contact.website"
+                            className="input-field"
+                            value={formData.contact.website}
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="location" className="form-label">Location</label>
+                          <input
+                            type="text"
+                            id="location"
+                            name="contact.location"
+                            className="input-field"
+                            value={formData.contact.location}
+                            onChange={handleChange}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -378,17 +453,17 @@ const ResumeForm = ({ onClose, resume }) => {
 
                 {step === 4 && (
                   <div className="space-y-6">
-                    {formData.skills.map((skill, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          className="input-field flex-1"
-                          value={skill}
-                          onChange={(e) => handleSkillChange(index, e.target.value)}
-                          placeholder="Enter a skill"
-                          required
-                        />
-                        {index > 0 && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4">Skills</h3>
+                      {formData.skills.map((skill, index) => (
+                        <div key={index} className="flex gap-2 mb-2">
+                          <input
+                            type="text"
+                            className="input-field"
+                            value={skill}
+                            onChange={(e) => handleSkillChange(index, e.target.value)}
+                            required
+                          />
                           <button
                             type="button"
                             onClick={() => removeSkill(index)}
@@ -396,16 +471,155 @@ const ResumeForm = ({ onClose, resume }) => {
                           >
                             Remove
                           </button>
-                        )}
-                      </div>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={addSkill}
-                      className="btn-secondary w-full"
-                    >
-                      Add Skill
-                    </button>
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={addSkill}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        Add Skill
+                      </button>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4">Languages</h3>
+                      {formData.languages.map((language, index) => (
+                        <div key={index} className="flex gap-2 mb-2">
+                          <input
+                            type="text"
+                            className="input-field"
+                            placeholder="Language"
+                            value={language.name}
+                            onChange={(e) => {
+                              const newLanguages = [...formData.languages];
+                              newLanguages[index].name = e.target.value;
+                              setFormData({ ...formData, languages: newLanguages });
+                            }}
+                            required
+                          />
+                          <select
+                            className="input-field"
+                            value={language.proficiency}
+                            onChange={(e) => {
+                              const newLanguages = [...formData.languages];
+                              newLanguages[index].proficiency = e.target.value;
+                              setFormData({ ...formData, languages: newLanguages });
+                            }}
+                            required
+                          >
+                            <option value="Basic">Basic</option>
+                            <option value="Conversational">Conversational</option>
+                            <option value="Fluent">Fluent</option>
+                            <option value="Native">Native</option>
+                          </select>
+                          <button
+                            type="button"
+                            onClick={() => removeLanguage(index)}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={addLanguage}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        Add Language
+                      </button>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4">References</h3>
+                      {formData.references.map((reference, index) => (
+                        <div key={index} className="space-y-4 mb-4 p-4 border rounded">
+                          <div>
+                            <label className="form-label">Name</label>
+                            <input
+                              type="text"
+                              className="input-field"
+                              value={reference.name}
+                              onChange={(e) => {
+                                const newReferences = [...formData.references];
+                                newReferences[index].name = e.target.value;
+                                setFormData({ ...formData, references: newReferences });
+                              }}
+                              required
+                            />
+                          </div>
+                          <div>
+                            <label className="form-label">Position</label>
+                            <input
+                              type="text"
+                              className="input-field"
+                              value={reference.position}
+                              onChange={(e) => {
+                                const newReferences = [...formData.references];
+                                newReferences[index].position = e.target.value;
+                                setFormData({ ...formData, references: newReferences });
+                              }}
+                              required
+                            />
+                          </div>
+                          <div>
+                            <label className="form-label">Company</label>
+                            <input
+                              type="text"
+                              className="input-field"
+                              value={reference.company}
+                              onChange={(e) => {
+                                const newReferences = [...formData.references];
+                                newReferences[index].company = e.target.value;
+                                setFormData({ ...formData, references: newReferences });
+                              }}
+                              required
+                            />
+                          </div>
+                          <div>
+                            <label className="form-label">Phone</label>
+                            <input
+                              type="tel"
+                              className="input-field"
+                              value={reference.phone}
+                              onChange={(e) => {
+                                const newReferences = [...formData.references];
+                                newReferences[index].phone = e.target.value;
+                                setFormData({ ...formData, references: newReferences });
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <label className="form-label">Email</label>
+                            <input
+                              type="email"
+                              className="input-field"
+                              value={reference.email}
+                              onChange={(e) => {
+                                const newReferences = [...formData.references];
+                                newReferences[index].email = e.target.value;
+                                setFormData({ ...formData, references: newReferences });
+                              }}
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeReference(index)}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            Remove Reference
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={addReference}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        Add Reference
+                      </button>
+                    </div>
                   </div>
                 )}
 
