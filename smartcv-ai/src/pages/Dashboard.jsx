@@ -6,13 +6,15 @@ import axios from 'axios';
 import imageCompression from 'browser-image-compression';
 
 const Dashboard = () => {
-  const { user, updateProfilePicture } = useAuth();
+  const { user, updateProfilePicture, updateName } = useAuth();
   const [activeTab, setActiveTab] = useState('settings');
   const [showResumeForm, setShowResumeForm] = useState(false);
   const [selectedResume, setSelectedResume] = useState(null);
   const [profilePic, setProfilePic] = useState(user?.profilePicture || '');
   const [profilePicPreview, setProfilePicPreview] = useState(user?.profilePicture || '');
   const [saving, setSaving] = useState(false);
+  const [name, setName] = useState(user?.name || '');
+  const [profileMessage, setProfileMessage] = useState('');
 
   const handleEditResume = (resume) => {
     setSelectedResume(resume);
@@ -55,16 +57,35 @@ const Dashboard = () => {
 
   const handleSaveProfile = async () => {
     setSaving(true);
-    try {
-      await axios.put(
-        'http://localhost:5000/api/user/profile-picture',
-        { profilePicture: profilePic },
-        { withCredentials: true }
-      );
-      await updateProfilePicture(profilePic);
-      alert('Profile picture saved!');
-    } catch (error) {
-      alert('Failed to save profile picture');
+    setProfileMessage('');
+    let success = true;
+    let errorMsg = '';
+    // Update name if changed
+    if (name !== user?.name) {
+      const nameResult = await updateName(name);
+      if (!nameResult.success) {
+        success = false;
+        errorMsg = nameResult.message || 'Failed to update name';
+      }
+    }
+    // Update profile picture if changed
+    if (profilePic && profilePic !== user?.profilePicture) {
+      try {
+        await axios.put(
+          'http://localhost:5000/api/user/profile-picture',
+          { profilePicture: profilePic },
+          { withCredentials: true }
+        );
+        await updateProfilePicture(profilePic);
+      } catch (error) {
+        success = false;
+        errorMsg = 'Failed to save profile picture';
+      }
+    }
+    if (success) {
+      setProfileMessage('Profile updated!');
+    } else {
+      setProfileMessage(errorMsg);
     }
     setSaving(false);
   };
@@ -78,7 +99,7 @@ const Dashboard = () => {
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Account Settings</h1>
               <p className="mt-1 text-sm text-gray-600">
-                Welcome back, {user?.name || user?.email}
+                Welcome back, {name || user?.email}
               </p>
             </div>
             <button
@@ -153,7 +174,9 @@ const Dashboard = () => {
                       type="text"
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                       placeholder="Your name"
-                      defaultValue={user?.name}
+                      value={name}
+                      onChange={e => setName(e.target.value)}
+                      disabled={saving}
                     />
                   </div>
                   <div>
@@ -173,6 +196,7 @@ const Dashboard = () => {
                   >
                     {saving ? 'Saving...' : 'Save Changes'}
                   </button>
+                  {profileMessage && <div className="text-xs text-green-600 mt-2">{profileMessage}</div>}
                 </div>
               </div>
             </div>

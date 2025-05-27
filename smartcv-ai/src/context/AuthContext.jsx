@@ -145,6 +145,19 @@ export const AuthProvider = ({ children }) => {
     Cookies.set('user', JSON.stringify(updatedUser), { expires: 30, sameSite: 'Lax', path: '/' });
   };
 
+  const updateName = async (name) => {
+    if (!user) return;
+    try {
+      const res = await axios.put('http://localhost:5000/api/user/name', { name }, { withCredentials: true });
+      const updatedUser = { ...user, name: res.data.name };
+      setUser(updatedUser);
+      Cookies.set('user', JSON.stringify(updatedUser), { expires: 30, sameSite: 'Lax', path: '/' });
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: error.response?.data?.message || 'Failed to update name' };
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -152,7 +165,8 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     updateProfilePicture,
-    getProfile
+    getProfile,
+    updateName
   };
 
   return (

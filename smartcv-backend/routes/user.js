@@ -31,4 +31,22 @@ router.get('/me', protect, async (req, res) => {
   }
 });
 
+// Update username
+router.put('/name', protect, async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name) {
+      return res.status(400).json({ success: false, message: 'No name provided' });
+    }
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { name },
+      { new: true }
+    );
+    res.json({ success: true, name: user.name });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to update name' });
+  }
+});
+
 module.exports = router; 
