@@ -4,6 +4,8 @@ import axios from 'axios';
 import ResumeForm from './ResumeForm';
 import { useAuth } from '../../context/AuthContext';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ResumeList = () => {
   const [resumes, setResumes] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -16,20 +18,45 @@ const ResumeList = () => {
 
   const fetchResumes = async () => {
     try {
+      setLoading(true);
+      setError('');
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/resumes', {
+      
+      if (!token) {
+        setError('No authentication token found');
+        navigate('/login');
+        return;
+      }
+
+      console.log('Fetching resumes from:', `${API_URL}/api/resumes`);
+      const response = await axios.get(`${API_URL}/api/resumes`, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
         withCredentials: true
       });
-      setResumes(response.data.data);
+
+      console.log('Resumes response:', response.data);
+      if (response.data && response.data.data) {
+        setResumes(response.data.data);
+      } else {
+        setError('Invalid response format from server');
+      }
     } catch (error) {
-      setError('Failed to fetch resumes');
       console.error('Error fetching resumes:', error);
-      if (error.response?.status === 401) {
-        // Redirect to login if unauthorized
-        navigate('/login');
+      if (error.response) {
+        console.error('Error response:', error.response.data);
+        if (error.response.status === 401) {
+          setError('Session expired. Please login again.');
+          navigate('/login');
+        } else {
+          setError(error.response.data.message || 'Failed to fetch resumes');
+        }
+      } else if (error.request) {
+        setError('No response from server. Please check your connection.');
+      } else {
+        setError('Error setting up the request');
       }
     } finally {
       setLoading(false);
@@ -59,7 +86,7 @@ const ResumeList = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/resumes/${resumeToDelete._id}`, {
+      await axios.delete(`${API_URL}/api/resumes/${resumeToDelete._id}`, {
         withCredentials: true
       });
       setResumes(resumes.filter(r => r._id !== resumeToDelete._id));
@@ -70,6 +97,9 @@ const ResumeList = () => {
       setError('Failed to delete resume');
     }
   };
+
+  // Defensive: ensure resumes is always an array
+  const safeResumes = Array.isArray(resumes) ? resumes : [];
 
   if (loading) {
     return <div className="text-center">Loading...</div>;
@@ -91,13 +121,13 @@ const ResumeList = () => {
         </button>
       </div>
 
-      {resumes.length === 0 ? (
+      {safeResumes.length === 0 ? (
         <div className="text-center text-gray-500">
           No resumes found. Create your first resume!
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {resumes.map((resume) => (
+          {safeResumes.map((resume) => (
             <div
               key={resume._id}
               className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"

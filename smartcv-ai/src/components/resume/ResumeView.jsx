@@ -4,6 +4,8 @@ import axios from 'axios';
 import html2pdf from 'html2pdf.js';
 import ResumeTemplate from './ResumeTemplate';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ResumeView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -17,7 +19,7 @@ const ResumeView = () => {
     const fetchResume = async () => {
       try {
         console.log('Fetching resume with ID:', id);
-        const response = await axios.get(`http://localhost:5000/api/resumes/${id}`, {
+        const response = await axios.get(`${API_URL}/api/resumes/${id}`, {
           headers: {
             'Content-Type': 'application/json'
           },

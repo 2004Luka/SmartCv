@@ -30,7 +30,7 @@ router.post('/analyze', async (req, res) => {
       const path = require('path');
       return res.status(500).json({
         success: false,
-        message: `OPENAI_API_KEY is missing. .env path tried: ${path.resolve(__dirname, '../smartcv-ai/.env')}`
+        message: `OPENAI_API_KEY is missing. .env path tried: ${path.resolve(__dirname, '../.env')}`
       });
     }
     const openai = new OpenAI({ apiKey });

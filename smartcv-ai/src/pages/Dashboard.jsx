@@ -5,6 +5,8 @@ import ResumeList from '../components/resume/ResumeList';
 import axios from 'axios';
 import imageCompression from 'browser-image-compression';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Dashboard = () => {
   const { user, updateProfile, updateName } = useAuth();
   const [activeTab, setActiveTab] = useState('settings');
@@ -24,7 +26,7 @@ const Dashboard = () => {
   const handleDeleteResume = async (resumeId) => {
     if (window.confirm('Are you sure you want to delete this resume?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/resumes/${resumeId}`, {
+        await axios.delete(`${API_URL}/api/resumes/${resumeId}`, {
           withCredentials: true
         });
         // Refresh the resume list
