@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { usePDF } from 'react-to-pdf';
+import html2pdf from 'html2pdf.js';
 import ResumeTemplate from './ResumeTemplate';
 
 const ResumeView = () => {
@@ -12,7 +12,6 @@ const ResumeView = () => {
   const [error, setError] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState('professional');
   const resumeRef = useRef(null);
-  const { toPDF, targetRef } = usePDF({ filename: 'resume.pdf' });
 
   useEffect(() => {
     const fetchResume = async () => {
@@ -27,7 +26,6 @@ const ResumeView = () => {
         
         console.log('API Response:', response.data);
         
-        // Check if the response has the expected structure
         if (response.data && response.data.data) {
           setResume(response.data.data);
         } else {
@@ -51,10 +49,38 @@ const ResumeView = () => {
 
   const handleExportPDF = async () => {
     try {
-      await toPDF();
+      setError('');
+      if (!resumeRef.current) throw new Error('Resume element not found');
+
+      // Save original width
+      const originalWidth = resumeRef.current.style.width;
+      // Set width to 794px for A4 at 96dpi
+      resumeRef.current.style.width = '794px';
+
+      // Wait for reflow
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      const element = resumeRef.current;
+      const opt = {
+        margin: 0,
+        filename: `resume_${resume.personalInfo?.firstName || 'export'}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#ffffff',
+          windowWidth: 794,
+          windowHeight: 1123, // A4 height at 96dpi
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true }
+      };
+
+      await html2pdf().set(opt).from(element).save();
+
+      // Restore original width
+      resumeRef.current.style.width = originalWidth;
     } catch (err) {
-      console.error('Error generating PDF:', err);
-      setError('Failed to generate PDF');
+      setError(`Failed to generate PDF: ${err.message}`);
     }
   };
 
@@ -69,7 +95,18 @@ const ResumeView = () => {
   if (error) {
     return (
       <div className="page-container">
-        <div className="text-center text-red-600">{error}</div>
+        <div className="text-center text-red-600 mb-4">{error}</div>
+        <div className="text-center">
+          <button 
+            onClick={() => {
+              setError('');
+              window.location.reload();
+            }}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
+            Retry
+          </button>
+        </div>
       </div>
     );
   }
@@ -82,18 +119,16 @@ const ResumeView = () => {
     );
   }
 
-  console.log('Rendering resume with data:', resume);
-
   return (
-    <div className="page-container">
-      <div className="max-w-4xl mx-auto">
+    <div className="page-container" style={{ background: '#f0f6fa', minHeight: '100vh' }}>
+      <div>
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">Resume Preview</h1>
           <div className="flex gap-4">
             <div className="flex gap-2">
               <button
                 onClick={() => handleTemplateChange('professional')}
-                className={`px-4 py-2 rounded-md ${
+                className={`px-4 py-2 rounded-md transition-colors ${
                   selectedTemplate === 'professional'
                     ? 'bg-primary-600 text-white'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -103,7 +138,7 @@ const ResumeView = () => {
               </button>
               <button
                 onClick={() => handleTemplateChange('creative')}
-                className={`px-4 py-2 rounded-md ${
+                className={`px-4 py-2 rounded-md transition-colors ${
                   selectedTemplate === 'creative'
                     ? 'bg-primary-600 text-white'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -113,7 +148,7 @@ const ResumeView = () => {
               </button>
               <button
                 onClick={() => handleTemplateChange('executive')}
-                className={`px-4 py-2 rounded-md ${
+                className={`px-4 py-2 rounded-md transition-colors ${
                   selectedTemplate === 'executive'
                     ? 'bg-primary-600 text-white'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -124,19 +159,38 @@ const ResumeView = () => {
             </div>
             <button
               onClick={handleExportPDF}
-              className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+              className="px-4 py-2 rounded-md transition-colors bg-primary-600 text-white hover:bg-primary-700"
             >
               Export PDF
             </button>
           </div>
         </div>
 
-        <div className="bg-white shadow-lg rounded-lg p-8" ref={targetRef}>
-          <ResumeTemplate resume={resume} template={selectedTemplate} />
+        <div className="flex justify-center">
+          <div 
+            ref={resumeRef} 
+            className="resume-container"
+            style={{ 
+              width: '210mm', 
+              height: 'auto',
+              minHeight: '297mm',
+              margin: '0 auto', 
+              background: 'white',
+              position: 'relative',
+              overflow: 'visible',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              boxSizing: 'border-box'
+            }}
+          >
+            <ResumeTemplate 
+              resume={resume} 
+              template={selectedTemplate}
+            />
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default ResumeView; 
+export default ResumeView;

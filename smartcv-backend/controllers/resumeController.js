@@ -99,33 +99,10 @@ exports.getResume = async (req, res) => {
       });
     }
 
-    // Format the resume data
-    const formattedResume = {
-      id: resume._id,
-      title: resume.title,
-      jobTitle: resume.jobTitle,
-      summary: resume.summary,
-      experience: resume.experience.map(exp => ({
-        title: exp.title,
-        company: exp.company,
-        startDate: exp.startDate,
-        endDate: exp.endDate,
-        description: exp.description
-      })),
-      education: resume.education.map(edu => ({
-        degree: edu.degree,
-        institution: edu.institution,
-        startDate: edu.startDate,
-        endDate: edu.endDate
-      })),
-      skills: resume.skills
-    };
-
-    console.log('Formatted resume data:', formattedResume);
-
+    // Return the full resume document with all fields
     res.status(200).json({
       success: true,
-      data: formattedResume
+      data: resume
     });
   } catch (error) {
     console.error('Error in getResume:', error);

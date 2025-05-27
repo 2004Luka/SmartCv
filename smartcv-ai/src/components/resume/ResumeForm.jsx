@@ -23,12 +23,22 @@ const ResumeForm = ({ onClose, resume }) => {
   });
 
   const handleChange = (e, index, section) => {
+    const { name, value } = e.target;
     if (section) {
       const newData = [...formData[section]];
-      newData[index] = { ...newData[index], [e.target.name]: e.target.value };
+      newData[index] = { ...newData[index], [name]: value };
       setFormData({ ...formData, [section]: newData });
+    } else if (name.includes('.')) {
+      const [parent, child] = name.split('.');
+      setFormData({
+        ...formData,
+        [parent]: {
+          ...formData[parent],
+          [child]: value
+        }
+      });
     } else {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
+      setFormData({ ...formData, [name]: value });
     }
   };
 
