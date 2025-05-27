@@ -1,7 +1,7 @@
 {
   "name": "smartcv-backend",
   "version": "1.0.0",
-  "description": "Backend for SmartCV AI - AI-Powered Resume Tailor",
+  "description": "Backend for SmartCv - AI-Powered Resume Tailor",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

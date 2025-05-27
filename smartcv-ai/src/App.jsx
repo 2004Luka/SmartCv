@@ -6,7 +6,6 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-import Dashboard from './pages/Dashboard';
 import ResumeList from './components/resume/ResumeList';
 import ResumeView from './components/resume/ResumeView';
 import Home from './pages/Home';
@@ -27,14 +26,6 @@ function App() {
               <Route path="/reset-password/:token" element={<ResetPassword />} />
 
               {/* Protected Routes */}
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
               <Route
                 path="/resumes"
                 element={

@@ -22,7 +22,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/resumes', require('./routes/resume'));
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to SmartCV AI Backend' });
+  res.json({ message: 'Welcome to SmartCv Backend' });
 });
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/smartcv')

@@ -1,4 +1,4 @@
-# SmartCV AI - AI-Powered Resume Tailor
+# SmartCv
 
 An intelligent application that helps users tailor their resumes for specific job listings using AI.
 

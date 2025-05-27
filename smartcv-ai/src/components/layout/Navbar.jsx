@@ -10,19 +10,13 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-bold text-primary-600">SmartCV AI</span>
+              <span className="text-2xl font-bold text-primary-600">SmartCv</span>
             </Link>
           </div>
           
           <div className="flex items-center space-x-4">
             {user ? (
               <>
-                <Link 
-                  to="/dashboard" 
-                  className="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-                >
-                  Dashboard
-                </Link>
                 <button
                   onClick={logout}
                   className="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"

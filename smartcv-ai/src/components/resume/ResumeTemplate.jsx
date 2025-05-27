@@ -421,7 +421,6 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
           }}></div>
         </>
       )}
-      
       <div style={{
         display: 'grid',
         gridTemplateColumns: '2fr 1fr',
@@ -446,7 +445,6 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
                 borderRadius: '9999px'
               }}></div>
             )}
-            
             <h1 style={{
               fontSize: isPdf ? '24pt' : '36px',
               fontWeight: '900',
@@ -469,7 +467,6 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
                 }}></div>
               )}
             </h1>
-            
             <p style={{
               fontSize: isPdf ? '12pt' : '18px',
               color: '#4b5563',
@@ -480,7 +477,36 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
               {resume.jobTitle || 'No Job Title'}
             </p>
           </header>
-  
+          {/* Contact Section */}
+          {(resume.contact?.email || resume.contact?.phone || resume.contact?.website || resume.contact?.location) && (
+            <section style={{ marginBottom: '24px' }}>
+              <h2 style={{
+                fontSize: isPdf ? '11pt' : '18px',
+                fontWeight: 'bold',
+                color: '#111827',
+                marginBottom: '12px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                position: 'relative'
+              }}>
+                Contact
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-4px',
+                  left: 0,
+                  width: '32px',
+                  height: '2px',
+                  backgroundColor: '#6366f1'
+                }}></div>
+              </h2>
+              <div style={{ color: '#374151', fontSize: isPdf ? '9pt' : '14px', lineHeight: '1.6' }}>
+                {resume.contact?.email && <div>Email: {resume.contact.email}</div>}
+                {resume.contact?.phone && <div>Phone: {resume.contact.phone}</div>}
+                {resume.contact?.website && <div>Website: {resume.contact.website}</div>}
+                {resume.contact?.location && <div>Location: {resume.contact.location}</div>}
+              </div>
+            </section>
+          )}
           {resume.summary && (
             <section style={{ marginBottom: '24px', position: 'relative' }}>
               <h2 style={{
@@ -513,7 +539,6 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
               </p>
             </section>
           )}
-  
           {experience.length > 0 && (
             <section style={{ marginBottom: '24px' }}>
               <h2 style={{
@@ -554,7 +579,6 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
                       borderRadius: '50%',
                       border: '2px solid white'
                     }}></div>
-                    
                     <h3 style={{
                       fontSize: isPdf ? '10pt' : '16px',
                       fontWeight: 'bold',
@@ -563,7 +587,6 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
                     }}>
                       {exp.title || 'Untitled Position'}
                     </h3>
-                    
                     <p style={{
                       color: '#6366f1',
                       fontWeight: '600',
@@ -572,7 +595,6 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
                     }}>
                       {exp.company || 'No Company'}
                     </p>
-                    
                     <p style={{
                       fontSize: isPdf ? '8pt' : '12px',
                       color: '#6b7280',
@@ -581,7 +603,6 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
                     }}>
                       {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
                     </p>
-                    
                     {exp.description && (
                       <p style={{
                         color: '#374151',
@@ -596,8 +617,70 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
               </div>
             </section>
           )}
+          {/* Languages Section */}
+          {resume.languages && resume.languages.length > 0 && (
+            <section style={{ marginBottom: '24px' }}>
+              <h2 style={{
+                fontSize: isPdf ? '11pt' : '18px',
+                fontWeight: 'bold',
+                color: '#111827',
+                marginBottom: '12px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                position: 'relative'
+              }}>
+                Languages
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-4px',
+                  left: 0,
+                  width: '32px',
+                  height: '2px',
+                  backgroundColor: '#6366f1'
+                }}></div>
+              </h2>
+              <div style={{ color: '#374151', fontSize: isPdf ? '9pt' : '14px', lineHeight: '1.6' }}>
+                {resume.languages.map((language, index) => (
+                  <div key={index}>{language.name} ({language.proficiency})</div>
+                ))}
+              </div>
+            </section>
+          )}
+          {/* References Section */}
+          {resume.references && resume.references.length > 0 && (
+            <section style={{ marginBottom: '24px' }}>
+              <h2 style={{
+                fontSize: isPdf ? '11pt' : '18px',
+                fontWeight: 'bold',
+                color: '#111827',
+                marginBottom: '12px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                position: 'relative'
+              }}>
+                References
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-4px',
+                  left: 0,
+                  width: '32px',
+                  height: '2px',
+                  backgroundColor: '#6366f1'
+                }}></div>
+              </h2>
+              <div style={{ color: '#374151', fontSize: isPdf ? '9pt' : '14px', lineHeight: '1.6' }}>
+                {resume.references.map((reference, index) => (
+                  <div key={index} style={{ marginBottom: '8px' }}>
+                    <div style={{ fontWeight: 'bold' }}>{reference.name}</div>
+                    <div>{reference.position} / {reference.company}</div>
+                    {reference.phone && <div>Phone: {reference.phone}</div>}
+                    {reference.email && <div>Email: {reference.email}</div>}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
-  
         <div style={{
           borderLeft: '2px solid #f3f4f6',
           paddingLeft: '24px',
@@ -613,7 +696,6 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
             backgroundColor: '#f472b6',
             borderRadius: '9999px'
           }}></div>
-          
           {education.length > 0 && (
             <section style={{ marginBottom: '24px' }}>
               <h2 style={{
@@ -653,6 +735,26 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
                   }}>
                     {edu.institution || 'No Institution'}
                   </p>
+                  {edu.field && (
+                    <p style={{
+                      fontSize: isPdf ? '8pt' : '12px',
+                      color: '#6b7280',
+                      fontWeight: '500',
+                      marginBottom: '4px'
+                    }}>
+                      Field: {edu.field}
+                    </p>
+                  )}
+                  {edu.gpa && (
+                    <p style={{
+                      fontSize: isPdf ? '8pt' : '12px',
+                      color: '#6b7280',
+                      fontWeight: '500',
+                      marginBottom: '4px'
+                    }}>
+                      GPA: {edu.gpa}
+                    </p>
+                  )}
                   <p style={{
                     fontSize: isPdf ? '8pt' : '12px',
                     color: '#6b7280',
@@ -664,7 +766,6 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
               ))}
             </section>
           )}
-  
           {skills.length > 0 && (
             <section>
               <h2 style={{
@@ -748,7 +849,28 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
           {resume.jobTitle || 'No Job Title'}
         </p>
       </header>
-
+      {/* Contact Section */}
+      {(resume.contact?.email || resume.contact?.phone || resume.contact?.website || resume.contact?.location) && (
+        <section style={{ marginBottom: '32px' }}>
+          <h2 style={{
+            fontSize: isPdf ? '14pt' : '20px',
+            fontWeight: '600',
+            color: '#111827',
+            marginBottom: '16px',
+            borderBottom: '2px solid #e5e7eb',
+            paddingBottom: '8px',
+            margin: '0 0 16px 0'
+          }}>
+            Contact
+          </h2>
+          <div style={{ color: '#374151', fontSize: isPdf ? '11pt' : '18px', lineHeight: '1.6' }}>
+            {resume.contact?.email && <div>Email: {resume.contact.email}</div>}
+            {resume.contact?.phone && <div>Phone: {resume.contact.phone}</div>}
+            {resume.contact?.website && <div>Website: {resume.contact.website}</div>}
+            {resume.contact?.location && <div>Location: {resume.contact.location}</div>}
+          </div>
+        </section>
+      )}
       {resume.summary && (
         <section style={{ marginBottom: '32px' }}>
           <h2 style={{
@@ -772,7 +894,6 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
           </p>
         </section>
       )}
-
       {experience.length > 0 && (
         <section style={{ marginBottom: '32px' }}>
           <h2 style={{
@@ -825,7 +946,53 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
           ))}
         </section>
       )}
-
+      {/* Languages Section */}
+      {resume.languages && resume.languages.length > 0 && (
+        <section style={{ marginBottom: '32px' }}>
+          <h2 style={{
+            fontSize: isPdf ? '14pt' : '20px',
+            fontWeight: '600',
+            color: '#111827',
+            marginBottom: '16px',
+            borderBottom: '2px solid #e5e7eb',
+            paddingBottom: '8px',
+            margin: '0 0 16px 0'
+          }}>
+            Languages
+          </h2>
+          <div style={{ color: '#374151', fontSize: isPdf ? '11pt' : '18px', lineHeight: '1.6' }}>
+            {resume.languages.map((language, index) => (
+              <div key={index}>{language.name} ({language.proficiency})</div>
+            ))}
+          </div>
+        </section>
+      )}
+      {/* References Section */}
+      {resume.references && resume.references.length > 0 && (
+        <section style={{ marginBottom: '32px' }}>
+          <h2 style={{
+            fontSize: isPdf ? '14pt' : '20px',
+            fontWeight: '600',
+            color: '#111827',
+            marginBottom: '16px',
+            borderBottom: '2px solid #e5e7eb',
+            paddingBottom: '8px',
+            margin: '0 0 16px 0'
+          }}>
+            References
+          </h2>
+          <div style={{ color: '#374151', fontSize: isPdf ? '11pt' : '18px', lineHeight: '1.6' }}>
+            {resume.references.map((reference, index) => (
+              <div key={index} style={{ marginBottom: '8px' }}>
+                <div style={{ fontWeight: 'bold' }}>{reference.name}</div>
+                <div>{reference.position} / {reference.company}</div>
+                {reference.phone && <div>Phone: {reference.phone}</div>}
+                {reference.email && <div>Email: {reference.email}</div>}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
@@ -861,6 +1028,24 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
                 }}>
                   {edu.institution || 'No Institution'}
                 </p>
+                {edu.field && (
+                  <p style={{
+                    fontSize: isPdf ? '9pt' : '14px',
+                    color: '#6b7280',
+                    margin: 0
+                  }}>
+                    Field: {edu.field}
+                  </p>
+                )}
+                {edu.gpa && (
+                  <p style={{
+                    fontSize: isPdf ? '9pt' : '14px',
+                    color: '#6b7280',
+                    margin: 0
+                  }}>
+                    GPA: {edu.gpa}
+                  </p>
+                )}
                 <p style={{
                   fontSize: isPdf ? '9pt' : '14px',
                   color: '#9ca3af',
@@ -872,7 +1057,6 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
             ))}
           </section>
         )}
-
         {skills.length > 0 && (
           <section style={{ marginBottom: '32px' }}>
             <h2 style={{

@@ -17,7 +17,7 @@ const sendEmail = async (options) => {
 
   // Define email options
   const message = {
-    from: `SmartCV <${testAccount.user}>`,
+    from: `SmartCv <${testAccount.user}>`,
     to: options.email,
     subject: options.subject,
     text: options.message
