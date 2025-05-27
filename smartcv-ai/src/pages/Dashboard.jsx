@@ -6,7 +6,7 @@ import axios from 'axios';
 import imageCompression from 'browser-image-compression';
 
 const Dashboard = () => {
-  const { user, updateProfilePicture, updateName } = useAuth();
+  const { user, updateProfile, updateName } = useAuth();
   const [activeTab, setActiveTab] = useState('settings');
   const [showResumeForm, setShowResumeForm] = useState(false);
   const [selectedResume, setSelectedResume] = useState(null);
@@ -58,34 +58,16 @@ const Dashboard = () => {
   const handleSaveProfile = async () => {
     setSaving(true);
     setProfileMessage('');
-    let success = true;
-    let errorMsg = '';
-    // Update name if changed
-    if (name !== user?.name) {
-      const nameResult = await updateName(name);
-      if (!nameResult.success) {
-        success = false;
-        errorMsg = nameResult.message || 'Failed to update name';
-      }
-    }
-    // Update profile picture if changed
-    if (profilePic && profilePic !== user?.profilePicture) {
-      try {
-        await axios.put(
-          'http://localhost:5000/api/user/profile-picture',
-          { profilePicture: profilePic },
-          { withCredentials: true }
-        );
-        await updateProfilePicture(profilePic);
-      } catch (error) {
-        success = false;
-        errorMsg = 'Failed to save profile picture';
-      }
-    }
-    if (success) {
+    try {
+      const res = await axios.put(
+        'http://localhost:5000/api/user/profile',
+        { name, profilePicture: profilePic },
+        { withCredentials: true }
+      );
+      updateProfile(res.data.user);
       setProfileMessage('Profile updated!');
-    } else {
-      setProfileMessage(errorMsg);
+    } catch (error) {
+      setProfileMessage('Failed to update profile');
     }
     setSaving(false);
   };

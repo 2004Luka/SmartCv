@@ -8,12 +8,6 @@ const {
   updateResume,
   deleteResume
 } = require('../controllers/resumeController');
-const { OpenAI } = require('openai');
-
-// Initialize OpenAI
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
 
 router.use(protect); // All resume routes require authentication
 
@@ -29,6 +23,17 @@ router.route('/:id')
 // AI Resume Analysis route
 router.post('/analyze', async (req, res) => {
   try {
+    // Dynamically require OpenAI and initialize after dotenv loads
+    const { OpenAI } = require('openai');
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      const path = require('path');
+      return res.status(500).json({
+        success: false,
+        message: `OPENAI_API_KEY is missing. .env path tried: ${path.resolve(__dirname, '../smartcv-ai/.env')}`
+      });
+    }
+    const openai = new OpenAI({ apiKey });
     const { resume, jobTitle } = req.body;
 
     if (!resume || !jobTitle) {

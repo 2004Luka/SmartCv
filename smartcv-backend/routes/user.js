@@ -49,4 +49,18 @@ router.put('/name', protect, async (req, res) => {
   }
 });
 
+// Unified profile update (name and profilePicture)
+router.put('/profile', protect, async (req, res) => {
+  try {
+    const { name, profilePicture } = req.body;
+    const update = {};
+    if (name !== undefined) update.name = name;
+    if (profilePicture !== undefined) update.profilePicture = profilePicture;
+    const user = await User.findByIdAndUpdate(req.user.id, update, { new: true });
+    res.json({ success: true, user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to update profile' });
+  }
+});
+
 module.exports = router; 

@@ -61,6 +61,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateProfile = (userObj) => {
+    setUser(userObj);
+    Cookies.set('user', JSON.stringify(userObj), { expires: 30, sameSite: 'Lax', path: '/' });
+  };
+
   const login = async (email, password, rememberMe = false) => {
     try {
       const response = await axios.post('http://localhost:5000/api/auth/login', {
@@ -69,18 +74,12 @@ export const AuthProvider = ({ children }) => {
       });
 
       const { token, user } = response.data;
-      
-      // Set cookies with expiration based on remember me
-      const expires = rememberMe ? 30 : 1; // 30 days if remember me is checked, 1 day if not
+      const expires = rememberMe ? 30 : 1;
       Cookies.set('token', token, { expires, sameSite: 'Lax', path: '/' });
       localStorage.setItem('token', token);
       Cookies.set('user', JSON.stringify(user), { expires, sameSite: 'Lax', path: '/' });
-      
-      // Set axios default header
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
       setUser(user);
-      await getProfile();
       return { success: true };
     } catch (error) {
       return {
@@ -99,17 +98,11 @@ export const AuthProvider = ({ children }) => {
       });
 
       const { token, user } = response.data;
-      
-      // Set cookies with default expiration (1 day)
       Cookies.set('token', token, { expires: 1, sameSite: 'Lax', path: '/' });
       localStorage.setItem('token', token);
       Cookies.set('user', JSON.stringify(user), { expires: 1, sameSite: 'Lax', path: '/' });
-      
-      // Set axios default header
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
       setUser(user);
-      await getProfile();
       return { success: true };
     } catch (error) {
       return {
@@ -166,7 +159,8 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateProfilePicture,
     getProfile,
-    updateName
+    updateName,
+    updateProfile
   };
 
   return (
