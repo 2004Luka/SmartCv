@@ -12,6 +12,7 @@
     "concurrently": "^8.2.2"
   },
   "dependencies": {
+    "browser-image-compression": "^2.0.2",
     "git": "^0.1.5",
     "html2pdf.js": "^0.10.3",
     "mongodb": "^6.16.0"

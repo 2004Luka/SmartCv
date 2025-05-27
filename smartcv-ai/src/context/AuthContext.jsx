@@ -13,10 +13,10 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session on mount
     const token = Cookies.get('token') || localStorage.getItem('token');
     const userData = Cookies.get('user');
-    
+    console.log('On mount:', { token, userData });
+
     if (token && userData) {
       try {
         const parsedUser = JSON.parse(userData);
@@ -24,14 +24,42 @@ export const AuthProvider = ({ children }) => {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       } catch (error) {
         console.error('Error parsing user data:', error);
-        // Clear invalid data
         Cookies.remove('token');
         localStorage.removeItem('token');
         Cookies.remove('user');
       }
+      setLoading(false);
+      return;
     }
+
+    // If token exists but no user cookie, fetch user from backend
+    if (token && !userData) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      axios.get('http://localhost:5000/api/user/me', { withCredentials: true })
+        .then(res => {
+          setUser(res.data.user);
+          Cookies.set('user', JSON.stringify(res.data.user), { expires: 30, sameSite: 'Lax', path: '/' });
+        })
+        .catch(() => {
+          Cookies.remove('token');
+          localStorage.removeItem('token');
+        })
+        .finally(() => setLoading(false));
+      return;
+    }
+
     setLoading(false);
   }, []);
+
+  const getProfile = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/user/me', { withCredentials: true });
+      setUser(res.data.user);
+      Cookies.set('user', JSON.stringify(res.data.user), { expires: 30, sameSite: 'Lax', path: '/' });
+    } catch (error) {
+      // handle error
+    }
+  };
 
   const login = async (email, password, rememberMe = false) => {
     try {
@@ -44,14 +72,15 @@ export const AuthProvider = ({ children }) => {
       
       // Set cookies with expiration based on remember me
       const expires = rememberMe ? 30 : 1; // 30 days if remember me is checked, 1 day if not
-      Cookies.set('token', token, { expires });
+      Cookies.set('token', token, { expires, sameSite: 'Lax', path: '/' });
       localStorage.setItem('token', token);
-      Cookies.set('user', JSON.stringify(user), { expires });
+      Cookies.set('user', JSON.stringify(user), { expires, sameSite: 'Lax', path: '/' });
       
       // Set axios default header
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       
       setUser(user);
+      await getProfile();
       return { success: true };
     } catch (error) {
       return {
@@ -72,14 +101,15 @@ export const AuthProvider = ({ children }) => {
       const { token, user } = response.data;
       
       // Set cookies with default expiration (1 day)
-      Cookies.set('token', token, { expires: 1 });
+      Cookies.set('token', token, { expires: 1, sameSite: 'Lax', path: '/' });
       localStorage.setItem('token', token);
-      Cookies.set('user', JSON.stringify(user), { expires: 1 });
+      Cookies.set('user', JSON.stringify(user), { expires: 1, sameSite: 'Lax', path: '/' });
       
       // Set axios default header
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       
       setUser(user);
+      await getProfile();
       return { success: true };
     } catch (error) {
       return {
@@ -101,12 +131,28 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const updateProfilePicture = async (profilePicture) => {
+    if (!user) return;
+    try {
+      // Update on backend (but don't wait for backend to return new user)
+      await axios.put('http://localhost:5000/api/user/profile-picture', { profilePicture }, { withCredentials: true });
+    } catch (error) {
+      // handle error if needed
+    }
+    // Immediately update user in state and cookies
+    const updatedUser = { ...user, profilePicture };
+    setUser(updatedUser);
+    Cookies.set('user', JSON.stringify(updatedUser), { expires: 30, sameSite: 'Lax', path: '/' });
+  };
+
   const value = {
     user,
     loading,
     login,
     register,
-    logout
+    logout,
+    updateProfilePicture,
+    getProfile
   };
 
   return (
