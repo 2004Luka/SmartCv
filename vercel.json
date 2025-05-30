@@ -1,15 +1,30 @@
 {
+  "version": 2,
   "builds": [
-    { 
-      "src": "smartcv-ai/package.json", 
-      "use": "@vercel/static-build", 
-      "config": { 
-        "distDir": "smartcv-ai/dist",
-        "buildCommand": "cd smartcv-ai && npm install && npm run build"
-      } 
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
     }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "smartcv-ai/dist/index.html" }
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/favicon.ico"
+    },
+    {
+      "src": "/manifest.json",
+      "dest": "/manifest.json"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
   ]
 } 
