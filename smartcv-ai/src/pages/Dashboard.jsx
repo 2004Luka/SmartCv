@@ -75,19 +75,19 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       {/* Header */}
-      <div className="bg-white shadow">
+      <div className="bg-gray-800 shadow-xl border-b border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Account Settings</h1>
-              <p className="mt-1 text-sm text-gray-600">
+              <h1 className="text-2xl font-bold text-white">Account Settings</h1>
+              <p className="mt-1 text-sm text-gray-300">
                 Welcome back, {name || user?.email}
               </p>
             </div>
             <button
-              className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-2xl hover:from-blue-500 hover:to-purple-500 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/25 font-semibold"
               onClick={() => setShowResumeForm(true)}
             >
               Create New Resume
@@ -99,15 +99,15 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Tabs */}
-        <div className="border-b border-gray-200">
+        <div className="border-b border-gray-700">
           <nav className="-mb-px flex space-x-8">
             <button
               onClick={() => setActiveTab('settings')}
               className={`${
                 activeTab === 'settings'
-                  ? 'border-primary-500 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                  ? 'border-blue-500 text-blue-400 bg-gray-800/50'
+                  : 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500'
+              } whitespace-nowrap py-4 px-6 border-b-2 font-semibold text-lg rounded-t-xl transition-all duration-300`}
             >
               Settings
             </button>
@@ -115,9 +115,9 @@ const Dashboard = () => {
               onClick={() => setActiveTab('resumes')}
               className={`${
                 activeTab === 'resumes'
-                  ? 'border-primary-500 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                  ? 'border-blue-500 text-blue-400 bg-gray-800/50'
+                  : 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500'
+              } whitespace-nowrap py-4 px-6 border-b-2 font-semibold text-lg rounded-t-xl transition-all duration-300`}
             >
               My Resumes
             </button>
@@ -128,16 +128,16 @@ const Dashboard = () => {
         <div className="mt-8">
           {activeTab === 'settings' && (
             <div>
-              <h2 className="text-2xl font-semibold text-gray-800 mb-6">Profile</h2>
-              <div className="bg-white rounded-lg shadow-md p-6 max-w-lg mx-auto">
-                <div className="flex flex-col items-center gap-4 mb-6">
+              <h2 className="text-2xl font-semibold text-white mb-6">Profile</h2>
+              <div className="bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-lg mx-auto border border-gray-700">
+                <div className="flex flex-col items-center gap-4 mb-8">
                   <div className="relative">
                     <img
                       src={profilePicPreview || '/default-avatar.png'}
                       alt="Profile"
-                      className="h-24 w-24 rounded-full object-cover border-2 border-primary-500 shadow"
+                      className="h-28 w-28 rounded-full object-cover border-4 border-blue-500 shadow-lg"
                     />
-                    <label className="absolute bottom-0 right-0 bg-primary-600 text-white rounded-full p-2 cursor-pointer hover:bg-primary-700 transition-colors">
+                    <label className="absolute bottom-0 right-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full p-3 cursor-pointer hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-lg transform hover:scale-110">
                       <input
                         type="file"
                         accept="image/*"
@@ -149,14 +149,14 @@ const Dashboard = () => {
                       </svg>
                     </label>
                   </div>
-                  <div className="text-gray-600 text-sm">Click the camera to change your profile picture</div>
+                  <div className="text-gray-300 text-sm">Click the camera to change your profile picture</div>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Name</label>
+                    <label className="block text-sm font-semibold text-gray-200 mb-2">Name</label>
                     <input
                       type="text"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                      className="w-full rounded-xl border border-gray-600 bg-gray-700 text-white px-4 py-3 shadow-inner focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
                       placeholder="Your name"
                       value={name}
                       onChange={e => setName(e.target.value)}
@@ -164,23 +164,31 @@ const Dashboard = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Email</label>
+                    <label className="block text-sm font-semibold text-gray-200 mb-2">Email</label>
                     <input
                       type="email"
                       disabled
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-50"
+                      className="w-full rounded-xl border border-gray-600 bg-gray-600 text-gray-400 px-4 py-3 shadow-inner"
                       placeholder="Your email"
                       defaultValue={user?.email}
                     />
                   </div>
                   <button
-                    className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors w-full mt-4"
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-2xl hover:from-blue-500 hover:to-purple-500 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/25 w-full mt-6 font-semibold text-lg"
                     onClick={handleSaveProfile}
                     disabled={saving}
                   >
                     {saving ? 'Saving...' : 'Save Changes'}
                   </button>
-                  {profileMessage && <div className="text-xs text-green-600 mt-2">{profileMessage}</div>}
+                  {profileMessage && (
+                    <div className={`text-sm mt-3 p-3 rounded-xl ${
+                      profileMessage.includes('Failed') 
+                        ? 'text-red-400 bg-red-900/20 border border-red-700' 
+                        : 'text-green-400 bg-green-900/20 border border-green-700'
+                    }`}>
+                      {profileMessage}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -205,4 +213,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard; 
+export default Dashboard;

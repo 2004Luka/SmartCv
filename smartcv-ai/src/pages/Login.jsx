@@ -38,102 +38,110 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        <div className="text-center">
+          <h2 className="mt-6 text-4xl font-extrabold text-white">
             Welcome Back
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-4 text-lg text-gray-300">
             Sign in to continue tailoring your resume
           </p>
         </div>
+        
         {error && (
-          <div className="rounded-md bg-red-50 p-4">
+          <div className="rounded-2xl bg-red-900/30 border border-red-700 p-4 shadow-lg">
             <div className="flex">
               <div className="ml-3">
-                <p className="text-sm font-medium text-red-800">{error}</p>
+                <p className="text-sm font-medium text-red-400">{error}</p>
               </div>
             </div>
           </div>
         )}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email" className="sr-only">Email address</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="rememberMe"
-                name="rememberMe"
-                type="checkbox"
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                checked={formData.rememberMe}
-                onChange={handleChange}
-              />
-              <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-900">
-                Remember me
-              </label>
+        
+        <div className="bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-700">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="email" className="block text-sm font-semibold text-gray-200 mb-2">
+                  Email address
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white placeholder-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-inner"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="password" className="block text-sm font-semibold text-gray-200 mb-2">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white placeholder-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-inner"
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
 
-            <div className="text-sm">
-              <Link
-                to="/forgot-password"
-                className="font-medium text-primary-600 hover:text-primary-500"
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  id="rememberMe"
+                  name="rememberMe"
+                  type="checkbox"
+                  className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-600 bg-gray-700 rounded-lg"
+                  checked={formData.rememberMe}
+                  onChange={handleChange}
+                />
+                <label htmlFor="rememberMe" className="ml-3 block text-sm text-gray-300 font-medium">
+                  Remember me
+                </label>
+              </div>
+
+              <div className="text-sm">
+                <Link
+                  to="/forgot-password"
+                  className="font-semibold text-blue-400 hover:text-blue-300 transition-colors duration-300"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex justify-center py-4 px-8 border border-transparent text-lg font-semibold rounded-2xl text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/25 focus:ring-offset-gray-800"
               >
-                Forgot your password?
+                {loading ? 'Signing in...' : 'Sign in'}
+              </button>
+            </div>
+            
+            <div className="text-center">
+              <Link
+                to="/register"
+                className="font-semibold text-blue-400 hover:text-blue-300 transition-colors duration-300"
+              >
+                Don't have an account? Register
               </Link>
             </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
-          
-          <div className="text-center">
-            <Link
-              to="/register"
-              className="font-medium text-primary-600 hover:text-primary-500"
-            >
-              Don't have an account? Register
-            </Link>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
 };
 
-export default Login; 
+export default Login;
