@@ -1,5 +1,8 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+  "builds": [
+    { "src": "smartcv-ai/package.json", "use": "@vercel/static-build", "config": { "distDir": "smartcv-ai/dist" } }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "smartcv-ai/dist/index.html" }
   ]
 } 
