@@ -6,10 +6,18 @@
     "install-all": "npm install && cd smartcv-backend && npm install && cd ../smartcv-ai && npm install",
     "backend": "cd smartcv-backend && npm run dev",
     "frontend": "cd smartcv-ai && npm run dev",
-    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "build:frontend": "cd smartcv-ai && npm run build",
+    "build:backend": "cd smartcv-backend && npm run build",
+    "build": "npm run clean && npm run install-all && npm run build:backend && npm run build:frontend",
+    "start:frontend": "cd smartcv-ai && npm run start",
+    "start:backend": "cd smartcv-backend && npm run start",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "clean": "rimraf smartcv-ai/dist smartcv-backend/dist"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "rimraf": "^5.0.5"
   },
   "dependencies": {
     "browser-image-compression": "^2.0.2",
