@@ -10,7 +10,21 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     define: {
-      'import.meta.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL)
+      // Define all environment variables that should be available in the frontend
+      'process.env': {
+        VITE_API_URL: JSON.stringify(env.VITE_API_URL?.replace(/"/g, '')),
+        NODE_ENV: JSON.stringify(mode)
+      }
+    },
+    server: {
+      port: 5173,
+      proxy: {
+        '/api': {
+          target: env.VITE_API_URL?.replace(/"/g, ''),
+          changeOrigin: true,
+          secure: false
+        }
+      }
     }
   }
 })

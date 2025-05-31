@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = process.env.VITE_API_URL?.replace(/"/g, '') || 'http://localhost:5000';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');

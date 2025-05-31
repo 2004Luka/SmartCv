@@ -13,6 +13,10 @@ exports.protect = async (req, res, next) => {
       return res.status(401).json({ message: 'Not authorized to access this route' });
     }
 
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET is not defined in environment variables');
+    }
+
     try {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);

@@ -4,7 +4,7 @@ import axios from 'axios';
 import html2pdf from 'html2pdf.js';
 import ResumeTemplate from './ResumeTemplate';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = process.env.VITE_API_URL?.replace(/"/g, '') || 'http://localhost:5000';
 
 const ResumeView = () => {
   const { id } = useParams();
@@ -88,26 +88,31 @@ const ResumeView = () => {
 
   if (loading) {
     return (
-      <div className="page-container">
-        <div className="text-center">Loading...</div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-xl text-gray-300">Loading your resume...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="page-container">
-        <div className="text-center text-red-600 mb-4">{error}</div>
-        <div className="text-center">
-          <button 
-            onClick={() => {
-              setError('');
-              window.location.reload();
-            }}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Retry
-          </button>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center">
+        <div className="bg-red-900/30 border border-red-700 rounded-2xl p-8 shadow-lg max-w-md w-full mx-4">
+          <div className="text-center">
+            <p className="text-lg font-medium text-red-400">{error}</p>
+            <button 
+              onClick={() => {
+                setError('');
+                window.location.reload();
+              }}
+              className="mt-4 px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-500 hover:to-purple-500 transition-all duration-300 font-semibold"
+            >
+              Retry
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -115,45 +120,45 @@ const ResumeView = () => {
 
   if (!resume) {
     return (
-      <div className="page-container">
-        <div className="text-center">Resume not found</div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center">
+        <div className="text-center text-gray-300">Resume not found</div>
       </div>
     );
   }
 
   return (
-    <div className="page-container" style={{ background: '#f0f6fa', minHeight: '100vh' }}>
-      <div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+      <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Resume Preview</h1>
+          <h1 className="text-2xl font-bold text-white">Resume Preview</h1>
           <div className="flex gap-4">
             <div className="flex gap-2">
               <button
                 onClick={() => handleTemplateChange('professional')}
-                className={`px-4 py-2 rounded-md transition-colors ${
+                className={`px-4 py-2 rounded-xl transition-all duration-300 ${
                   selectedTemplate === 'professional'
-                    ? 'bg-primary-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                 }`}
               >
                 Professional
               </button>
               <button
                 onClick={() => handleTemplateChange('creative')}
-                className={`px-4 py-2 rounded-md transition-colors ${
+                className={`px-4 py-2 rounded-xl transition-all duration-300 ${
                   selectedTemplate === 'creative'
-                    ? 'bg-primary-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                 }`}
               >
                 Creative
               </button>
               <button
                 onClick={() => handleTemplateChange('executive')}
-                className={`px-4 py-2 rounded-md transition-colors ${
+                className={`px-4 py-2 rounded-xl transition-all duration-300 ${
                   selectedTemplate === 'executive'
-                    ? 'bg-primary-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                 }`}
               >
                 Executive
@@ -161,7 +166,7 @@ const ResumeView = () => {
             </div>
             <button
               onClick={handleExportPDF}
-              className="px-4 py-2 rounded-md transition-colors bg-primary-600 text-white hover:bg-primary-700"
+              className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-500 hover:to-purple-500 transition-all duration-300 font-medium shadow-lg hover:shadow-blue-500/25"
             >
               Export PDF
             </button>
@@ -181,7 +186,8 @@ const ResumeView = () => {
               position: 'relative',
               overflow: 'visible',
               boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              borderRadius: '1rem'
             }}
           >
             <ResumeTemplate 

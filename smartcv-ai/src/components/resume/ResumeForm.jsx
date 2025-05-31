@@ -95,7 +95,7 @@ const ResumeForm = ({ onClose, resume }) => {
       // Remove empty skills
       formattedData.skills = formattedData.skills.filter(skill => skill.trim() !== '');
 
-      const response = await axios.post('http://localhost:5000/api/resumes', formattedData, {
+      const response = await axios.post(`${process.env.VITE_API_URL?.replace(/"/g, '')}/api/resumes`, formattedData, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json'
@@ -164,14 +164,14 @@ const ResumeForm = ({ onClose, resume }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-gray-900/90 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-gray-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-gray-700 shadow-2xl">
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Create New Resume</h2>
+            <h2 className="text-2xl font-bold text-white">Create New Resume</h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-500"
+              className="text-gray-400 hover:text-gray-300 transition-colors duration-300"
             >
               <span className="sr-only">Close</span>
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -180,7 +180,6 @@ const ResumeForm = ({ onClose, resume }) => {
             </button>
           </div>
 
-          {/* Progress Steps */}
           <div className="mb-8">
             <div className="flex items-center justify-between">
               {['Basic Info', 'Experience', 'Education', 'Skills'].map((label, index) => (
@@ -188,19 +187,19 @@ const ResumeForm = ({ onClose, resume }) => {
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center ${
                       step > index + 1
-                        ? 'bg-primary-600 text-white'
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
                         : step === index + 1
-                        ? 'bg-primary-600 text-white'
-                        : 'bg-gray-200 text-gray-600'
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
+                        : 'bg-gray-700 text-gray-300'
                     }`}
                   >
                     {index + 1}
                   </div>
-                  <span className="ml-2 text-sm font-medium text-gray-900">{label}</span>
+                  <span className="ml-2 text-sm font-medium text-gray-300">{label}</span>
                   {index < 3 && (
-                    <div className="w-24 h-1 mx-4 bg-gray-200">
+                    <div className="w-24 h-1 mx-4 bg-gray-700">
                       <div
-                        className="h-full bg-primary-600"
+                        className="h-full bg-gradient-to-r from-blue-600 to-purple-600"
                         style={{ width: step > index + 1 ? '100%' : '0%' }}
                       />
                     </div>
@@ -216,84 +215,84 @@ const ResumeForm = ({ onClose, resume }) => {
                 {step === 1 && (
                   <div className="space-y-6">
                     <div>
-                      <label htmlFor="title" className="form-label">Resume Title</label>
+                      <label htmlFor="title" className="block text-sm font-medium text-gray-300 mb-2">Resume Title</label>
                       <input
                         type="text"
                         id="title"
                         name="title"
-                        className="input-field"
+                        className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         value={formData.title}
                         onChange={handleChange}
                         required
                       />
                     </div>
                     <div>
-                      <label htmlFor="jobTitle" className="form-label">Target Job Title</label>
+                      <label htmlFor="jobTitle" className="block text-sm font-medium text-gray-300 mb-2">Target Job Title</label>
                       <input
                         type="text"
                         id="jobTitle"
                         name="jobTitle"
-                        className="input-field"
+                        className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         value={formData.jobTitle}
                         onChange={handleChange}
                         required
                       />
                     </div>
                     <div>
-                      <label htmlFor="summary" className="form-label">Professional Summary</label>
+                      <label htmlFor="summary" className="block text-sm font-medium text-gray-300 mb-2">Professional Summary</label>
                       <textarea
                         id="summary"
                         name="summary"
                         rows="4"
-                        className="input-field"
+                        className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         value={formData.summary}
                         onChange={handleChange}
                         required
                       />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
+                      <h3 className="text-lg font-semibold text-white mb-4">Contact Information</h3>
                       <div className="space-y-4">
                         <div>
-                          <label htmlFor="email" className="form-label">Email</label>
+                          <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">Email</label>
                           <input
                             type="email"
                             id="email"
                             name="contact.email"
-                            className="input-field"
+                            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             value={formData.contact.email}
                             onChange={handleChange}
                           />
                         </div>
                         <div>
-                          <label htmlFor="phone" className="form-label">Phone</label>
+                          <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">Phone</label>
                           <input
                             type="tel"
                             id="phone"
                             name="contact.phone"
-                            className="input-field"
+                            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             value={formData.contact.phone}
                             onChange={handleChange}
                           />
                         </div>
                         <div>
-                          <label htmlFor="website" className="form-label">Website</label>
+                          <label htmlFor="website" className="block text-sm font-medium text-gray-300 mb-2">Website</label>
                           <input
                             type="url"
                             id="website"
                             name="contact.website"
-                            className="input-field"
+                            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             value={formData.contact.website}
                             onChange={handleChange}
                           />
                         </div>
                         <div>
-                          <label htmlFor="location" className="form-label">Location</label>
+                          <label htmlFor="location" className="block text-sm font-medium text-gray-300 mb-2">Location</label>
                           <input
                             type="text"
                             id="location"
                             name="contact.location"
-                            className="input-field"
+                            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             value={formData.contact.location}
                             onChange={handleChange}
                           />
@@ -306,14 +305,14 @@ const ResumeForm = ({ onClose, resume }) => {
                 {step === 2 && (
                   <div className="space-y-6">
                     {formData.experience.map((exp, index) => (
-                      <div key={index} className="p-4 border rounded-lg">
+                      <div key={index} className="p-4 bg-gray-700/50 border border-gray-600 rounded-xl">
                         <div className="flex justify-between items-center mb-4">
-                          <h3 className="text-lg font-medium">Experience {index + 1}</h3>
+                          <h3 className="text-lg font-medium text-white">Experience {index + 1}</h3>
                           {index > 0 && (
                             <button
                               type="button"
                               onClick={() => removeItem('experience', index)}
-                              className="text-red-600 hover:text-red-800"
+                              className="text-red-400 hover:text-red-300 transition-colors duration-300"
                             >
                               Remove
                             </button>
@@ -321,55 +320,55 @@ const ResumeForm = ({ onClose, resume }) => {
                         </div>
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                           <div>
-                            <label className="form-label">Company</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">Company</label>
                             <input
                               type="text"
                               name="company"
-                              className="input-field"
+                              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               value={exp.company}
                               onChange={(e) => handleChange(e, index, 'experience')}
                               required
                             />
                           </div>
                           <div>
-                            <label className="form-label">Position</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">Position</label>
                             <input
                               type="text"
                               name="position"
-                              className="input-field"
+                              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               value={exp.position}
                               onChange={(e) => handleChange(e, index, 'experience')}
                               required
                             />
                           </div>
                           <div>
-                            <label className="form-label">Start Date</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">Start Date</label>
                             <input
                               type="date"
                               name="startDate"
-                              className="input-field"
+                              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               value={exp.startDate}
                               onChange={(e) => handleChange(e, index, 'experience')}
                               required
                             />
                           </div>
                           <div>
-                            <label className="form-label">End Date</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">End Date</label>
                             <input
                               type="date"
                               name="endDate"
-                              className="input-field"
+                              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               value={exp.endDate}
                               onChange={(e) => handleChange(e, index, 'experience')}
                             />
                           </div>
                         </div>
                         <div className="mt-4">
-                          <label className="form-label">Description</label>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
                           <textarea
                             name="description"
                             rows="3"
-                            className="input-field"
+                            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             value={exp.description}
                             onChange={(e) => handleChange(e, index, 'experience')}
                             required
@@ -380,7 +379,7 @@ const ResumeForm = ({ onClose, resume }) => {
                     <button
                       type="button"
                       onClick={() => addItem('experience')}
-                      className="btn-secondary w-full"
+                      className="w-full px-6 py-3 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors duration-300 font-medium"
                     >
                       Add Experience
                     </button>
@@ -390,14 +389,14 @@ const ResumeForm = ({ onClose, resume }) => {
                 {step === 3 && (
                   <div className="space-y-6">
                     {formData.education.map((edu, index) => (
-                      <div key={index} className="p-4 border rounded-lg">
+                      <div key={index} className="p-4 bg-gray-700/50 border border-gray-600 rounded-xl">
                         <div className="flex justify-between items-center mb-4">
-                          <h3 className="text-lg font-medium">Education {index + 1}</h3>
+                          <h3 className="text-lg font-medium text-white">Education {index + 1}</h3>
                           {index > 0 && (
                             <button
                               type="button"
                               onClick={() => removeItem('education', index)}
-                              className="text-red-600 hover:text-red-800"
+                              className="text-red-400 hover:text-red-300 transition-colors duration-300"
                             >
                               Remove
                             </button>
@@ -405,44 +404,44 @@ const ResumeForm = ({ onClose, resume }) => {
                         </div>
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                           <div>
-                            <label className="form-label">School</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">School</label>
                             <input
                               type="text"
                               name="school"
-                              className="input-field"
+                              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               value={edu.school}
                               onChange={(e) => handleChange(e, index, 'education')}
                               required
                             />
                           </div>
                           <div>
-                            <label className="form-label">Degree</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">Degree</label>
                             <input
                               type="text"
                               name="degree"
-                              className="input-field"
+                              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               value={edu.degree}
                               onChange={(e) => handleChange(e, index, 'education')}
                               required
                             />
                           </div>
                           <div>
-                            <label className="form-label">Field of Study</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">Field of Study</label>
                             <input
                               type="text"
                               name="field"
-                              className="input-field"
+                              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               value={edu.field}
                               onChange={(e) => handleChange(e, index, 'education')}
                               required
                             />
                           </div>
                           <div>
-                            <label className="form-label">Graduation Date</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">Graduation Date</label>
                             <input
                               type="date"
                               name="graduationDate"
-                              className="input-field"
+                              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               value={edu.graduationDate}
                               onChange={(e) => handleChange(e, index, 'education')}
                               required
@@ -454,7 +453,7 @@ const ResumeForm = ({ onClose, resume }) => {
                     <button
                       type="button"
                       onClick={() => addItem('education')}
-                      className="btn-secondary w-full"
+                      className="w-full px-6 py-3 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors duration-300 font-medium"
                     >
                       Add Education
                     </button>
@@ -464,12 +463,12 @@ const ResumeForm = ({ onClose, resume }) => {
                 {step === 4 && (
                   <div className="space-y-6">
                     <div>
-                      <h3 className="text-lg font-semibold mb-4">Skills</h3>
+                      <h3 className="text-lg font-semibold text-white mb-4">Skills</h3>
                       {formData.skills.map((skill, index) => (
                         <div key={index} className="flex gap-2 mb-2">
                           <input
                             type="text"
-                            className="input-field"
+                            className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             value={skill}
                             onChange={(e) => handleSkillChange(index, e.target.value)}
                             required
@@ -477,7 +476,7 @@ const ResumeForm = ({ onClose, resume }) => {
                           <button
                             type="button"
                             onClick={() => removeSkill(index)}
-                            className="text-red-600 hover:text-red-800"
+                            className="text-red-400 hover:text-red-300 transition-colors duration-300"
                           >
                             Remove
                           </button>
@@ -486,19 +485,19 @@ const ResumeForm = ({ onClose, resume }) => {
                       <button
                         type="button"
                         onClick={addSkill}
-                        className="text-blue-600 hover:text-blue-800"
+                        className="text-blue-400 hover:text-blue-300 transition-colors duration-300"
                       >
                         Add Skill
                       </button>
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-semibold mb-4">Languages</h3>
+                      <h3 className="text-lg font-semibold text-white mb-4">Languages</h3>
                       {formData.languages.map((language, index) => (
                         <div key={index} className="flex gap-2 mb-2">
                           <input
                             type="text"
-                            className="input-field"
+                            className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             placeholder="Language"
                             value={language.name}
                             onChange={(e) => {
@@ -509,7 +508,7 @@ const ResumeForm = ({ onClose, resume }) => {
                             required
                           />
                           <select
-                            className="input-field"
+                            className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             value={language.proficiency}
                             onChange={(e) => {
                               const newLanguages = [...formData.languages];
@@ -526,7 +525,7 @@ const ResumeForm = ({ onClose, resume }) => {
                           <button
                             type="button"
                             onClick={() => removeLanguage(index)}
-                            className="text-red-600 hover:text-red-800"
+                            className="text-red-400 hover:text-red-300 transition-colors duration-300"
                           >
                             Remove
                           </button>
@@ -535,21 +534,21 @@ const ResumeForm = ({ onClose, resume }) => {
                       <button
                         type="button"
                         onClick={addLanguage}
-                        className="text-blue-600 hover:text-blue-800"
+                        className="text-blue-400 hover:text-blue-300 transition-colors duration-300"
                       >
                         Add Language
                       </button>
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-semibold mb-4">References</h3>
+                      <h3 className="text-lg font-semibold text-white mb-4">References</h3>
                       {formData.references.map((reference, index) => (
-                        <div key={index} className="space-y-4 mb-4 p-4 border rounded">
+                        <div key={index} className="space-y-4 mb-4 p-4 bg-gray-700/50 border border-gray-600 rounded-xl">
                           <div>
-                            <label className="form-label">Name</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">Name</label>
                             <input
                               type="text"
-                              className="input-field"
+                              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               value={reference.name}
                               onChange={(e) => {
                                 const newReferences = [...formData.references];
@@ -560,10 +559,10 @@ const ResumeForm = ({ onClose, resume }) => {
                             />
                           </div>
                           <div>
-                            <label className="form-label">Position</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">Position</label>
                             <input
                               type="text"
-                              className="input-field"
+                              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               value={reference.position}
                               onChange={(e) => {
                                 const newReferences = [...formData.references];
@@ -574,10 +573,10 @@ const ResumeForm = ({ onClose, resume }) => {
                             />
                           </div>
                           <div>
-                            <label className="form-label">Company</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">Company</label>
                             <input
                               type="text"
-                              className="input-field"
+                              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               value={reference.company}
                               onChange={(e) => {
                                 const newReferences = [...formData.references];
@@ -588,10 +587,10 @@ const ResumeForm = ({ onClose, resume }) => {
                             />
                           </div>
                           <div>
-                            <label className="form-label">Phone</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">Phone</label>
                             <input
                               type="tel"
-                              className="input-field"
+                              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               value={reference.phone}
                               onChange={(e) => {
                                 const newReferences = [...formData.references];
@@ -601,10 +600,10 @@ const ResumeForm = ({ onClose, resume }) => {
                             />
                           </div>
                           <div>
-                            <label className="form-label">Email</label>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
                             <input
                               type="email"
-                              className="input-field"
+                              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               value={reference.email}
                               onChange={(e) => {
                                 const newReferences = [...formData.references];
@@ -616,7 +615,7 @@ const ResumeForm = ({ onClose, resume }) => {
                           <button
                             type="button"
                             onClick={() => removeReference(index)}
-                            className="text-red-600 hover:text-red-800"
+                            className="text-red-400 hover:text-red-300 transition-colors duration-300"
                           >
                             Remove Reference
                           </button>
@@ -625,7 +624,7 @@ const ResumeForm = ({ onClose, resume }) => {
                       <button
                         type="button"
                         onClick={addReference}
-                        className="text-blue-600 hover:text-blue-800"
+                        className="text-blue-400 hover:text-blue-300 transition-colors duration-300"
                       >
                         Add Reference
                       </button>
@@ -638,7 +637,7 @@ const ResumeForm = ({ onClose, resume }) => {
                     <button
                       type="button"
                       onClick={() => setStep(step - 1)}
-                      className="btn-secondary"
+                      className="px-6 py-3 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors duration-300 font-medium"
                     >
                       Previous
                     </button>
@@ -647,14 +646,14 @@ const ResumeForm = ({ onClose, resume }) => {
                     <button
                       type="button"
                       onClick={() => setStep(step + 1)}
-                      className="btn-primary ml-auto"
+                      className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-500 hover:to-purple-500 transition-all duration-300 font-medium ml-auto"
                     >
                       Next
                     </button>
                   ) : (
                     <button
                       type="submit"
-                      className="btn-primary ml-auto"
+                      className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-500 hover:to-purple-500 transition-all duration-300 font-medium ml-auto"
                     >
                       Create Resume
                     </button>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = process.env.VITE_API_URL?.replace(/"/g, '') || 'http://localhost:5000';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');
@@ -11,13 +11,19 @@ const ResetPassword = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { resetToken } = useParams();
+  const { token } = useParams();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     setMessage('');
+
+    if (!token) {
+      setError('Invalid reset token');
+      setLoading(false);
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match');
@@ -27,7 +33,7 @@ const ResetPassword = () => {
 
     try {
       const response = await axios.put(
-        `${API_URL}/api/auth/reset-password/${resetToken}`,
+        `${API_URL}/api/auth/reset-password/${token}`,
         { password }
       );
 
