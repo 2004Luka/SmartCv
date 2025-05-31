@@ -17,12 +17,24 @@ export default defineConfig(({ mode }) => {
       }
     },
     server: {
-      port: 5173,
+      port: process.env.PORT || 5173,
       proxy: {
         '/api': {
           target: env.VITE_API_URL?.replace(/"/g, ''),
           changeOrigin: true,
           secure: false
+        }
+      }
+    },
+    build: {
+      outDir: 'dist',
+      sourcemap: false,
+      // Ensure the build is optimized for production
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true
         }
       }
     }
