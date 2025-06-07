@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import AIResumeSuggestions from './AIResumeSuggestions';
+//import AIResumeSuggestions from './AIResumeSuggestions';
 
 const ResumeForm = ({ onClose, resume }) => {
   const [step, setStep] = useState(1);
@@ -209,7 +209,7 @@ const ResumeForm = ({ onClose, resume }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
             <div>
               <form onSubmit={handleSubmit}>
                 {step === 1 && (
@@ -661,12 +661,12 @@ const ResumeForm = ({ onClose, resume }) => {
                 </div>
               </form>
             </div>
-            <div>
+            {/* <div>
               <AIResumeSuggestions
                 resume={formData}
                 onApplySuggestion={handleApplySuggestion}
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

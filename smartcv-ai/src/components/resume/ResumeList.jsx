@@ -131,7 +131,7 @@ const ResumeList = () => {
   }
 
   return (
-    <div className="min-h-screen  to-black">
+    <div className="h-auto  to-black">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>

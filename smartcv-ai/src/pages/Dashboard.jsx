@@ -75,27 +75,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-      {/* Header */}
-      <div className="bg-gray-800 shadow-xl border-b border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold text-white">Account Settings</h1>
-              <p className="mt-1 text-sm text-gray-300">
-                Welcome back, {name || user?.email}
-              </p>
-            </div>
-            <button
-              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-2xl hover:from-blue-500 hover:to-purple-500 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/25 font-semibold"
-              onClick={() => setShowResumeForm(true)}
-            >
-              Create New Resume
-            </button>
-          </div>
-        </div>
-      </div>
-
+    <div className="h-[90vh] bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Tabs */}

@@ -49,7 +49,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+    <div className="h-[90vh] bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center">
           <h2 className="text-4xl tracking-tight font-extrabold text-white sm:text-5xl">
