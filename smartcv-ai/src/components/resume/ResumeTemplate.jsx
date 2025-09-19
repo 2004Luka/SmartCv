@@ -275,7 +275,7 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
                       color: '#718096',
                       fontStyle: 'italic'
                     }}>
-                      {exp.title}
+                      {exp.position || exp.title || ''}
                     </p>
                   </div>
                   <div style={{
@@ -345,7 +345,7 @@ const ResumeTemplate = ({ resume, template, isPdf = false }) => {
                       margin: '2pt 0 0 0',
                       color: '#718096'
                     }}>
-                      {edu.institution}
+                      {edu.school || edu.institution || ''}
                     </p>
                     {edu.gpa && (
                       <p style={{

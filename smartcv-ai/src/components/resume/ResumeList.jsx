@@ -98,15 +98,14 @@ const ResumeList = () => {
     }
   };
 
-  // Defensive: ensure resumes is always an array
   const safeResumes = Array.isArray(resumes) ? resumes : [];
 
   if (loading) {
     return (
-      <div className="min-h-screen  flex items-center justify-center">
+      <div className="min-h-screen bg-[rgb(var(--color-bg))] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-xl text-gray-300">Loading your resumes...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[rgb(var(--color-primary))] mx-auto mb-4"></div>
+          <p className="text-xl text-slate-600">Loading your resumes...</p>
         </div>
       </div>
     );
@@ -114,13 +113,13 @@ const ResumeList = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center">
-        <div className="bg-red-900/30 border border-red-700 rounded-2xl p-8 shadow-lg max-w-md w-full mx-4">
+      <div className="min-h-screen bg-[rgb(var(--color-bg))] flex items-center justify-center">
+        <div className="form-error-message max-w-md w-full mx-4">
           <div className="text-center">
-            <p className="text-lg font-medium text-red-400">{error}</p>
+            <p className="text-lg font-medium">{error}</p>
             <button
               onClick={fetchResumes}
-              className="mt-4 px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-500 hover:to-purple-500 transition-all duration-300 font-semibold"
+              className="mt-4 btn-primary"
             >
               Try Again
             </button>
@@ -131,63 +130,63 @@ const ResumeList = () => {
   }
 
   return (
-    <div className="h-auto  to-black">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
+    <div className="h-auto bg-[rgb(var(--color-bg))] px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
-            <h1 className="text-4xl font-extrabold text-white mb-2">My Resumes</h1>
-            <p className="text-lg text-gray-300">Manage and create your professional resumes</p>
+            <h1 className="text-2xl sm:text-3xl font-semibold text-[rgb(var(--color-text))] mb-1">My Resumes</h1>
+            <p className="text-sm sm:text-base text-slate-600">Manage and create your professional resumes</p>
           </div>
           <button
             onClick={() => setShowForm(true)}
-            className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl hover:from-blue-500 hover:to-purple-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/25 font-semibold"
+            className="btn-primary px-4 py-2"
           >
             Create New Resume
           </button>
         </div>
 
         {safeResumes.length === 0 ? (
-          <div className="bg-gray-800 rounded-2xl shadow-2xl p-12 border border-gray-700 text-center">
+          <div className="card text-center">
             <div className="text-6xl mb-6">📄</div>
-            <h2 className="text-2xl font-bold text-white mb-4">No Resumes Yet</h2>
-            <p className="text-gray-300 mb-8 text-lg">
+            <h2 className="text-xl font-semibold text-[rgb(var(--color-text))] mb-3">No Resumes Yet</h2>
+            <p className="text-slate-600 mb-6">
               Create your first professional resume to get started on your career journey.
             </p>
             <button
               onClick={() => setShowForm(true)}
-              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl hover:from-blue-500 hover:to-purple-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/25 font-semibold text-lg"
+              className="btn-primary px-6 py-3"
             >
               Create Your First Resume
             </button>
           </div>
         ) : (
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {safeResumes.map((resume) => (
               <div
                 key={resume._id}
-                className="bg-gray-800 rounded-2xl shadow-2xl p-6 border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 transform hover:-translate-y-1"
+                className="card hover:shadow-md transition-shadow"
               >
                 <div className="mb-4">
-                  <h2 className="text-xl font-bold text-white mb-2 line-clamp-2">{resume.title}</h2>
-                  <p className="text-gray-300 text-sm">{resume.jobTitle}</p>
+                  <h2 className="text-lg font-semibold text-[rgb(var(--color-text))] mb-2 line-clamp-2">{resume.title}</h2>
+                  <p className="text-slate-600 text-sm">{resume.jobTitle}</p>
                 </div>
                 
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => handleView(resume._id)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-500 transition-colors duration-300 font-medium text-sm"
+                    className="btn-primary px-3 py-1 text-sm"
                   >
                     View
                   </button>
                   <button
                     onClick={() => handleEdit(resume)}
-                    className="px-4 py-2 bg-gray-600 text-white rounded-xl hover:bg-gray-500 transition-colors duration-300 font-medium text-sm"
+                    className="btn-secondary px-3 py-1 text-sm"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(resume)}
-                    className="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-500 transition-colors duration-300 font-medium text-sm"
+                    className="px-3 py-1 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium"
                   >
                     Delete
                   </button>
@@ -208,13 +207,13 @@ const ResumeList = () => {
 
         {/* Delete Confirmation Modal */}
         {showDeleteConfirm && (
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
-            <div className="relative top-20 mx-auto p-6 border border-gray-700 w-96 shadow-2xl rounded-2xl bg-gray-800 max-w-md">
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+            <div className="relative top-20 mx-auto p-6 border border-[rgb(var(--color-border))] w-full max-w-md mx-4 shadow-lg rounded-xl bg-[rgb(var(--color-surface))]">
               <div className="text-center">
                 <div className="text-4xl mb-4">⚠️</div>
-                <h3 className="text-xl font-bold text-white mb-4">Delete Resume</h3>
+                <h3 className="text-xl font-semibold text-[rgb(var(--color-text))] mb-4">Delete Resume</h3>
                 <div className="mb-6 px-4">
-                  <p className="text-gray-300">
+                  <p className="text-slate-600">
                     Are you sure you want to delete "{resumeToDelete?.title}"? This action cannot be undone.
                   </p>
                 </div>
@@ -224,13 +223,13 @@ const ResumeList = () => {
                       setShowDeleteConfirm(false);
                       setResumeToDelete(null);
                     }}
-                    className="px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-500 transition-colors duration-300 font-medium"
+                    className="btn-secondary px-4 py-2"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={confirmDelete}
-                    className="px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-500 transition-colors duration-300 font-medium"
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium"
                   >
                     Delete
                   </button>

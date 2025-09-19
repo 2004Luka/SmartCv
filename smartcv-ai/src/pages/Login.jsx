@@ -38,32 +38,28 @@ const Login = () => {
   };
 
   return (
-    <div className="h-[90vh] flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-[90vh] flex items-center justify-center bg-[rgb(var(--color-bg))] py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-6">
         <div className="text-center">
-          <h2 className="mt-6 text-4xl font-extrabold text-white">
-            Welcome Back
+          <h2 className="mt-2 text-2xl sm:text-3xl font-semibold text-[rgb(var(--color-text))]">
+            Welcome back
           </h2>
-          <p className="mt-4 text-lg text-gray-300">
+          <p className="mt-2 text-sm sm:text-base text-slate-600">
             Sign in to continue tailoring your resume
           </p>
         </div>
-        
+
         {error && (
-          <div className="rounded-2xl bg-red-900/30 border border-red-700 p-4 shadow-lg">
-            <div className="flex">
-              <div className="ml-3">
-                <p className="text-sm font-medium text-red-400">{error}</p>
-              </div>
-            </div>
+          <div className="form-error-message">
+            <p className="text-sm">{error}</p>
           </div>
         )}
-        
-        <div className="bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-700">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+
+        <div className="card">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-gray-200 mb-2">
+                <label htmlFor="email" className="form-label">
                   Email address
                 </label>
                 <input
@@ -71,14 +67,14 @@ const Login = () => {
                   name="email"
                   type="email"
                   required
-                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white placeholder-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-inner"
+                  className="input-field"
                   placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleChange}
                 />
               </div>
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-gray-200 mb-2">
+                <label htmlFor="password" className="form-label">
                   Password
                 </label>
                 <input
@@ -86,7 +82,7 @@ const Login = () => {
                   name="password"
                   type="password"
                   required
-                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white placeholder-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-inner"
+                  className="input-field"
                   placeholder="Enter your password"
                   value={formData.password}
                   onChange={handleChange}
@@ -100,11 +96,11 @@ const Login = () => {
                   id="rememberMe"
                   name="rememberMe"
                   type="checkbox"
-                  className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-600 bg-gray-700 rounded-lg"
+                  className="h-4 w-4 text-[rgb(var(--color-primary))] focus:ring-[rgb(var(--ring))] border-[rgb(var(--color-border))] rounded"
                   checked={formData.rememberMe}
                   onChange={handleChange}
                 />
-                <label htmlFor="rememberMe" className="ml-3 block text-sm text-gray-300 font-medium">
+                <label htmlFor="rememberMe" className="ml-2 block text-sm text-slate-600 font-medium">
                   Remember me
                 </label>
               </div>
@@ -112,7 +108,7 @@ const Login = () => {
               <div className="text-sm">
                 <Link
                   to="/forgot-password"
-                  className="font-semibold text-blue-400 hover:text-blue-300 transition-colors duration-300"
+                  className="font-medium text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-hover))] transition-colors duration-200"
                 >
                   Forgot password?
                 </Link>
@@ -123,7 +119,7 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center py-4 px-8 border border-transparent text-lg font-semibold rounded-2xl text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/25 focus:ring-offset-gray-800"
+                className="form-submit disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Signing in...' : 'Sign in'}
               </button>
@@ -132,7 +128,7 @@ const Login = () => {
             <div className="text-center">
               <Link
                 to="/register"
-                className="font-semibold text-blue-400 hover:text-blue-300 transition-colors duration-300"
+                className="font-medium text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-hover))] transition-colors duration-200"
               >
                 Don't have an account? Register
               </Link>

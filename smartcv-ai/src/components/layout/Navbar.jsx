@@ -6,48 +6,36 @@ const Navbar = () => {
   console.log('User:', user);
 
   return (
-    <nav className="h-[10vh] bg-gray-900 shadow-2xl border-b border-gray-700 ">
+    <nav className="border-b border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-20">
-          <div className="flex items-center">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center min-w-0">
             <Link to="/" className="flex-shrink-0 flex items-center">
-              <span className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">SmartCv</span>
+              <span className="text-xl font-semibold text-[rgb(var(--color-text))]">SmartCv</span>
             </Link>
           </div>
-          
-          <div className="flex items-center space-x-6">
+
+          <div className="flex items-center gap-2 sm:gap-3">
             {user ? (
               <>
-                <Link to="/dashboard" className="flex items-center group">
+                
+                <Link to="/dashboard" className="flex items-center gap-2">
                   <img
                     src={user.profilePicture || '/default-avatar.png'}
                     alt="Profile"
-                    className="h-11 w-11 rounded-full object-cover border-3 border-blue-500 group-hover:border-purple-500 transition-all duration-300 shadow-lg group-hover:shadow-blue-500/25"
+                    className="h-9 w-9 rounded-full object-cover border border-[rgb(var(--color-border))]"
                     onError={e => { e.target.onerror = null; e.target.src = '/default-avatar.png'; }}
                   />
-                  <span className="ml-3 text-white font-semibold text-lg hidden sm:inline group-hover:text-blue-400 transition-colors duration-300">Dashboard</span>
+                  <span className="hidden sm:inline text-sm font-medium nav-link">Settings</span>
                 </Link>
-                <button
-                  onClick={logout}
-                  className="text-gray-300 hover:text-white bg-gray-800 hover:bg-gray-700 px-6 py-3 rounded-2xl text-lg font-semibold transition-all duration-300 border border-gray-600 hover:border-gray-500 transform hover:scale-105"
-                >
-                  Logout
-                </button>
+                <Link to="/resumes" className="flex items-center gap-2">
+                  <span className="hidden sm:inline text-sm font-medium nav-link">My Resumes</span>
+                </Link>
               </>
             ) : (
               <>
-                <Link 
-                  to="/login" 
-                  className="text-gray-300 hover:text-white bg-gray-800 hover:bg-gray-700 px-6 py-3 rounded-2xl text-lg font-semibold transition-all duration-300 border border-gray-600 hover:border-gray-500 transform hover:scale-105"
-                >
-                  Login
-                </Link>
-                <Link 
-                  to="/register" 
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-500 hover:to-purple-500 px-8 py-3 rounded-2xl text-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-blue-500/25 transform hover:scale-105"
-                >
-                  Register
-                </Link>
+                <Link to="/login" className="btn-secondary text-sm px-3 py-2">Login</Link>
+                <Link to="/register" className="btn-primary text-sm px-3 py-2">Register</Link>
               </>
             )}
           </div>

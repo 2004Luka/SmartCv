@@ -8,7 +8,7 @@ import imageCompression from 'browser-image-compression';
 const API_URL = process.env.VITE_API_URL?.replace(/"/g, '') || 'http://localhost:5000';
 
 const Dashboard = () => {
-  const { user, updateProfile, updateName } = useAuth();
+  const { user, updateProfile, updateName,logout } = useAuth();
   const [activeTab, setActiveTab] = useState('settings');
   const [showResumeForm, setShowResumeForm] = useState(false);
   const [selectedResume, setSelectedResume] = useState(null);
@@ -46,7 +46,6 @@ const Dashboard = () => {
   const handleProfilePicChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Compress the image before reading as base64
       const compressedFile = await imageCompression(file, { maxSizeMB: 0.2, maxWidthOrHeight: 300 });
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -75,68 +74,58 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="h-[90vh] bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+    <div className="min-h-[90vh] bg-[rgb(var(--color-bg))]">
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Tabs */}
-        <div className="border-b border-gray-700">
-          <nav className="-mb-px flex space-x-8">
+        <div className="border-b border-[rgb(var(--color-border))]">
+          <nav className="-mb-px flex space-x-6">
             <button
               onClick={() => setActiveTab('settings')}
               className={`${
                 activeTab === 'settings'
-                  ? 'border-blue-500 text-blue-400 bg-gray-800/50'
-                  : 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500'
-              } whitespace-nowrap py-4 px-6 border-b-2 font-semibold text-lg rounded-t-xl transition-all duration-300`}
+                  ? 'border-[rgb(var(--color-primary))] text-[rgb(var(--color-primary))] bg-[rgb(var(--color-bg))]'
+                  : 'border-transparent text-slate-600 hover:text-slate-900 hover:border-slate-300'
+              } whitespace-nowrap py-3 px-4 border-b-2 font-medium text-base transition-all duration-200`}
             >
               Settings
             </button>
-            <button
-              onClick={() => setActiveTab('resumes')}
-              className={`${
-                activeTab === 'resumes'
-                  ? 'border-blue-500 text-blue-400 bg-gray-800/50'
-                  : 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500'
-              } whitespace-nowrap py-4 px-6 border-b-2 font-semibold text-lg rounded-t-xl transition-all duration-300`}
-            >
-              My Resumes
-            </button>
+           
           </nav>
         </div>
 
         {/* Tab Content */}
-        <div className="mt-8">
+        <div className="mt-6">
           {activeTab === 'settings' && (
             <div>
-              <h2 className="text-2xl font-semibold text-white mb-6">Profile</h2>
-              <div className="bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-lg mx-auto border border-gray-700">
-                <div className="flex flex-col items-center gap-4 mb-8">
+              <div className="card max-w-lg mx-auto">
+                <div className="flex flex-col items-center gap-4 mb-6">
                   <div className="relative">
                     <img
                       src={profilePicPreview || '/default-avatar.png'}
                       alt="Profile"
-                      className="h-28 w-28 rounded-full object-cover border-4 border-blue-500 shadow-lg"
+                      className="h-24 w-24 rounded-full object-cover border-2 border-[rgb(var(--color-border))]"
                     />
-                    <label className="absolute bottom-0 right-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full p-3 cursor-pointer hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-lg transform hover:scale-110">
+                    <label className="absolute bottom-0 right-0 bg-[rgb(var(--color-primary))] text-white rounded-full p-2 cursor-pointer hover:bg-[rgb(var(--color-primary-hover))] transition-all duration-200 shadow-sm">
                       <input
                         type="file"
                         accept="image/*"
                         className="hidden"
                         onChange={handleProfilePicChange}
                       />
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487a2.25 2.25 0 1 1 3.182 3.182M6.75 6.75h.008v.008H6.75V6.75zm10.5 10.5h.008v.008h-.008v-.008zM12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5z" />
                       </svg>
                     </label>
                   </div>
-                  <div className="text-gray-300 text-sm">Click the camera to change your profile picture</div>
+                  <div className="text-slate-600 text-sm">Click the camera to change your profile picture</div>
                 </div>
-                <div className="space-y-6">
+                <div className="space-y-5">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-200 mb-2">Name</label>
+                    <label className="form-label">Name</label>
                     <input
                       type="text"
-                      className="w-full rounded-xl border border-gray-600 bg-gray-700 text-white px-4 py-3 shadow-inner focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
+                      className="input-field"
                       placeholder="Your name"
                       value={name}
                       onChange={e => setName(e.target.value)}
@@ -144,31 +133,33 @@ const Dashboard = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-200 mb-2">Email</label>
+                    <label className="form-label">Email</label>
                     <input
                       type="email"
                       disabled
-                      className="w-full rounded-xl border border-gray-600 bg-gray-600 text-gray-400 px-4 py-3 shadow-inner"
+                      className="input-field bg-slate-100 text-slate-500"
                       placeholder="Your email"
                       defaultValue={user?.email}
                     />
                   </div>
                   <button
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-2xl hover:from-blue-500 hover:to-purple-500 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/25 w-full mt-6 font-semibold text-lg"
+                    className="form-submit"
                     onClick={handleSaveProfile}
                     disabled={saving}
                   >
                     {saving ? 'Saving...' : 'Save Changes'}
                   </button>
                   {profileMessage && (
-                    <div className={`text-sm mt-3 p-3 rounded-xl ${
+                    <div className={`text-sm mt-3 p-3 rounded-lg ${
                       profileMessage.includes('Failed') 
-                        ? 'text-red-400 bg-red-900/20 border border-red-700' 
-                        : 'text-green-400 bg-green-900/20 border border-green-700'
+                        ? 'form-error-message' 
+                        : 'bg-green-50 border border-green-200 text-green-700'
                     }`}>
                       {profileMessage}
                     </div>
                   )}
+                  <button onClick={logout} className="btn-secondary text-sm px-3 py-2 w-full">Logout</button>
+
                 </div>
               </div>
             </div>
@@ -179,16 +170,12 @@ const Dashboard = () => {
               <ResumeList onEdit={handleEditResume} onDelete={handleDeleteResume} />
             </div>
           )}
+          
         </div>
+        
       </div>
 
-      {/* Resume Form Modal */}
-      {showResumeForm && (
-        <ResumeForm
-          onClose={handleResumeFormClose}
-          resume={selectedResume}
-        />
-      )}
+      
     </div>
   );
 };
