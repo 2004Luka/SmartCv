@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../../lib/api';
 //import AIResumeSuggestions from './AIResumeSuggestions';
 
 const ResumeForm = ({ onClose, resume }) => {
@@ -21,6 +21,26 @@ const ResumeForm = ({ onClose, resume }) => {
     references: [{ name: '', position: '', company: '', phone: '', email: '' }],
     template: 'professional'
   });
+
+  const isStepValid = (currentStep) => {
+    if (currentStep === 1) {
+      return (
+        formData.title.trim() &&
+        formData.jobTitle.trim() &&
+        formData.summary.trim()
+      );
+    }
+    if (currentStep === 2) {
+      return formData.experience.every(exp => exp.company && exp.position && exp.startDate && exp.description);
+    }
+    if (currentStep === 3) {
+      return formData.education.every(edu => edu.school && edu.degree && edu.field && edu.graduationDate);
+    }
+    if (currentStep === 4) {
+      return formData.skills.length > 0 && formData.skills.every(s => s.trim());
+    }
+    return true;
+  };
 
   const handleChange = (e, index, section) => {
     const { name, value } = e.target;
@@ -95,24 +115,25 @@ const ResumeForm = ({ onClose, resume }) => {
       // Remove empty skills
       formattedData.skills = formattedData.skills.filter(skill => skill.trim() !== '');
 
-      const response = await axios.post(`${process.env.VITE_API_URL?.replace(/"/g, '')}/api/resumes`, formattedData, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      let response;
+      if (resume && resume._id) {
+        // Update existing resume
+        response = await api.put(`/api/resumes/${resume._id}`, formattedData);
+      } else {
+        // Create new resume
+        response = await api.post(`/api/resumes`, formattedData);
+      }
 
       if (response.data.success) {
         onClose();
-        window.location.reload(); // Refresh to show the new resume
       }
     } catch (error) {
-      console.error('Error creating resume:', error);
+      console.error('Error saving resume:', error);
       if (error.response) {
         console.error('Error details:', error.response.data);
-        alert(error.response.data.error || 'Failed to create resume');
+        alert(error.response.data.error || 'Failed to save resume');
       } else {
-        alert('Failed to create resume');
+        alert('Failed to save resume');
       }
     }
   };
@@ -168,7 +189,9 @@ const ResumeForm = ({ onClose, resume }) => {
       <div className="bg-[rgb(var(--color-surface))] rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-[rgb(var(--color-border))] shadow-lg mx-4 sm:mx-6">
         <div className="p-5">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-[rgb(var(--color-text))]">Create New Resume</h2>
+            <h2 className="text-xl font-semibold text-[rgb(var(--color-text))]">
+              {resume && resume._id ? 'Edit Resume' : 'Create New Resume'}
+            </h2>
             <button
               onClick={onClose}
               className="text-slate-500 hover:text-slate-700 transition-colors duration-200"
@@ -638,17 +661,19 @@ const ResumeForm = ({ onClose, resume }) => {
                   {step < 4 ? (
                     <button
                       type="button"
-                      onClick={() => setStep(step + 1)}
-                      className="btn-primary px-4 py-2 ml-auto"
+                      onClick={() => isStepValid(step) && setStep(step + 1)}
+                      className="btn-primary px-4 py-2 ml-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled={!isStepValid(step)}
                     >
                       Next
                     </button>
                   ) : (
                     <button
                       type="submit"
-                      className="btn-primary px-4 py-2 ml-auto"
+                      className="btn-primary px-4 py-2 ml-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled={!isStepValid(step)}
                     >
-                      Create Resume
+                      {resume && resume._id ? 'Update Resume' : 'Create Resume'}
                     </button>
                   )}
                 </div>

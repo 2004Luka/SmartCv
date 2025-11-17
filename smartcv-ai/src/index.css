@@ -5,14 +5,14 @@
 @layer base {
   :root {
     /* Minimal light palette */
-    --color-bg: 249 250 251; /* slate-50 */
+    --color-bg: 250 249 246; /* stone-50 */
     --color-surface: 255 255 255; /* white */
-    --color-border: 226 232 240; /* slate-200 */
-    --color-text: 15 23 42; /* slate-900 */
-    --color-muted: 71 85 105; /* slate-600 */
-    --color-primary: 2 132 199; /* sky-600 */
-    --color-primary-hover: 3 105 161; /* sky-700 */
-    --ring: 56 189 248; /* sky-400 */
+    --color-border: 228 224 216; /* stone-200 */
+    --color-text: 23 23 23; /* neutral-900 */
+    --color-muted: 87 83 78; /* stone-500 */
+    --color-primary: 5 150 105; /* emerald-600 */
+    --color-primary-hover: 4 120 87; /* emerald-700 */
+    --ring: 16 185 129; /* emerald-500 */
   }
   body {
     @apply bg-[rgb(var(--color-bg))] text-[rgb(var(--color-text))];
@@ -21,10 +21,10 @@
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg text-white bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-hover))] transition-colors duration-200 font-medium shadow-sm;
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg text-white bg-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-primary-hover))] transition-colors duration-200 font-medium;
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text))] border border-[rgb(var(--color-border))] hover:bg-slate-50 transition-colors duration-200 font-medium shadow-sm;
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text))] border border-[rgb(var(--color-border))] hover:bg-slate-50 transition-colors duration-200 font-medium;
   }
   .input-field {
     @apply w-full px-3 py-2 bg-[rgb(var(--color-surface))] border border-[rgb(var(--color-border))] rounded-lg text-[rgb(var(--color-text))] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ring))] focus:border-[rgb(var(--color-primary))] transition-all duration-200;

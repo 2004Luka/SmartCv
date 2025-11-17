@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { createRoot } from 'react-dom/client';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import html2pdf from 'html2pdf.js';
 import ResumeTemplate from './ResumeTemplate';
@@ -9,7 +8,6 @@ const API_URL = process.env.VITE_API_URL?.replace(/"/g, '') || 'http://localhost
 
 const ResumeView = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [resume, setResume] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -19,6 +17,14 @@ const ResumeView = () => {
   const [fitToScreen, setFitToScreen] = useState(() => (typeof window !== 'undefined' ? window.innerWidth < 640 : true));
   const [scale, setScale] = useState(1);
   const [renderHeight, setRenderHeight] = useState(0);
+  const primaryButton =
+    'inline-flex items-center justify-center rounded-2xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 disabled:cursor-not-allowed disabled:opacity-60';
+  const pillButton = (active) =>
+    `rounded-2xl px-4 py-2 text-sm font-semibold transition ${
+      active
+        ? 'bg-emerald-600 text-white shadow-[0_10px_30px_rgba(5,150,105,0.25)]'
+        : 'border border-stone-200/80 bg-white/80 text-stone-600 hover:text-stone-900'
+    }`;
 
   useEffect(() => {
     const fetchResume = async () => {
@@ -134,10 +140,10 @@ const ResumeView = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[rgb(var(--color-bg))] flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-stone-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[rgb(var(--color-primary))] mx-auto mb-4"></div>
-          <p className="text-xl text-slate-600">Loading your resume...</p>
+          <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-stone-200 border-t-emerald-500"></div>
+          <p className="text-sm font-medium text-stone-600">Loading your resume…</p>
         </div>
       </div>
     );
@@ -145,20 +151,18 @@ const ResumeView = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[rgb(var(--color-bg))] flex items-center justify-center">
-        <div className="form-error-message max-w-md w-full mx-4">
-          <div className="text-center">
-            <p className="text-lg font-medium">{error}</p>
-            <button 
-              onClick={() => {
-                setError('');
-                window.location.reload();
-              }}
-              className="mt-4 btn-primary"
-            >
-              Retry
-            </button>
-          </div>
+      <div className="flex min-h-screen items-center justify-center bg-stone-50 px-4">
+        <div className="w-full max-w-md rounded-3xl border border-rose-100 bg-rose-50 px-6 py-5 text-center shadow-lg">
+          <p className="text-base font-semibold text-rose-700">{error}</p>
+          <button
+            onClick={() => {
+              setError('');
+              window.location.reload();
+            }}
+            className={`${primaryButton} mt-4`}
+          >
+            Retry
+          </button>
         </div>
       </div>
     );
@@ -166,132 +170,95 @@ const ResumeView = () => {
 
   if (!resume) {
     return (
-      <div className="min-h-screen bg-[rgb(var(--color-bg))] flex items-center justify-center">
-        <div className="text-center text-slate-600">Resume not found</div>
+      <div className="flex min-h-screen items-center justify-center bg-stone-50">
+        <p className="text-sm font-medium text-stone-600">Resume not found.</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[rgb(var(--color-bg))]">
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <h1 className="text-xl sm:text-2xl font-semibold text-[rgb(var(--color-text))]">Resume Preview</h1>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex gap-2">
-              <button
-                onClick={() => handleTemplateChange('professional')}
-                className={`px-3 py-2 rounded-lg transition-all duration-200 text-sm ${
-                  selectedTemplate === 'professional'
-                    ? 'bg-[rgb(var(--color-primary))] text-white'
-                    : 'bg-[rgb(var(--color-surface))] text-slate-600 border border-[rgb(var(--color-border))] hover:bg-slate-50'
-                }`}
-              >
+    <div className="relative isolate min-h-screen py-8">
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute left-0 top-16 h-96 w-96 rounded-full bg-emerald-200/20 blur-[140px]" />
+        <div className="absolute right-6 bottom-0 h-96 w-96 rounded-full bg-stone-200/30 blur-[140px]" />
+      </div>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-4 rounded-[32px] border border-stone-200/70 bg-white/80 p-4 shadow-[0_25px_70px_rgba(15,23,42,0.08)] sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-stone-400">Preview</p>
+            <h1 className="text-2xl font-semibold text-stone-900">Resume templates</h1>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="flex flex-wrap gap-2">
+              <button onClick={() => handleTemplateChange('professional')} className={pillButton(selectedTemplate === 'professional')}>
                 Professional
               </button>
-              <button
-                onClick={() => handleTemplateChange('creative')}
-                className={`px-3 py-2 rounded-lg transition-all duration-200 text-sm ${
-                  selectedTemplate === 'creative'
-                    ? 'bg-[rgb(var(--color-primary))] text-white'
-                    : 'bg-[rgb(var(--color-surface))] text-slate-600 border border-[rgb(var(--color-border))] hover:bg-slate-50'
-                }`}
-              >
+              <button onClick={() => handleTemplateChange('creative')} className={pillButton(selectedTemplate === 'creative')}>
                 Creative
               </button>
-              <button
-                onClick={() => handleTemplateChange('executive')}
-                className={`px-3 py-2 rounded-lg transition-all duration-200 text-sm ${
-                  selectedTemplate === 'executive'
-                    ? 'bg-[rgb(var(--color-primary))] text-white'
-                    : 'bg-[rgb(var(--color-surface))] text-slate-600 border border-[rgb(var(--color-border))] hover:bg-slate-50'
-                }`}
-              >
+              <button onClick={() => handleTemplateChange('executive')} className={pillButton(selectedTemplate === 'executive')}>
                 Executive
               </button>
             </div>
             <div className="flex gap-2 sm:hidden">
-              <button
-                onClick={() => setFitToScreen(true)}
-                className={`px-3 py-2 rounded-lg transition-all duration-200 text-sm ${
-                  fitToScreen
-                    ? 'bg-[rgb(var(--color-primary))] text-white'
-                    : 'bg-[rgb(var(--color-surface))] text-slate-600 border border-[rgb(var(--color-border))] hover:bg-slate-50'
-                }`}
-              >
+              <button onClick={() => setFitToScreen(true)} className={pillButton(fitToScreen)}>
                 Fit to screen
               </button>
-              <button
-                onClick={() => setFitToScreen(false)}
-                className={`px-3 py-2 rounded-lg transition-all duration-200 text-sm ${
-                  !fitToScreen
-                    ? 'bg-[rgb(var(--color-primary))] text-white'
-                    : 'bg-[rgb(var(--color-surface))] text-slate-600 border border-[rgb(var(--color-border))] hover:bg-slate-50'
-                }`}
-              >
+              <button onClick={() => setFitToScreen(false)} className={pillButton(!fitToScreen)}>
                 Actual size
               </button>
             </div>
-            <button
-              onClick={handleExportPDF}
-              className="btn-primary px-4 py-2"
-            >
+            <button onClick={handleExportPDF} className={primaryButton}>
               Export PDF
             </button>
           </div>
         </div>
 
         {fitToScreen ? (
-          <div ref={viewportRef} className="w-full">
+          <div ref={viewportRef} className="w-full pt-6">
             <div className="flex justify-center" style={{ height: renderHeight }}>
               <div style={{ transform: `scale(${scale})`, transformOrigin: 'top center' }}>
-                <div 
-                  ref={resumeRef} 
+                <div
+                  ref={resumeRef}
                   className="resume-container"
-                  style={{ 
-                    width: '210mm', 
+                  style={{
+                    width: '210mm',
                     height: 'auto',
                     minHeight: '297mm',
-                    margin: '0 auto', 
+                    margin: '0 auto',
                     background: 'white',
                     position: 'relative',
                     overflow: 'visible',
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    boxShadow: '0 12px 40px rgba(15, 23, 42, 0.25)',
                     boxSizing: 'border-box',
-                    borderRadius: '1rem'
+                    borderRadius: '32px'
                   }}
                 >
-                  <ResumeTemplate 
-                    resume={resume} 
-                    template={selectedTemplate}
-                  />
+                  <ResumeTemplate resume={resume} template={selectedTemplate} />
                 </div>
               </div>
             </div>
           </div>
         ) : (
-          <div className="w-full overflow-x-auto">
-            <div className="flex justify-center min-w-[210mm]">
-              <div 
-                ref={resumeRef} 
+          <div className="w-full overflow-x-auto pt-6">
+            <div className="flex min-w-[210mm] justify-center">
+              <div
+                ref={resumeRef}
                 className="resume-container"
-                style={{ 
-                  width: '210mm', 
+                style={{
+                  width: '210mm',
                   height: 'auto',
                   minHeight: '297mm',
-                  margin: '0 auto', 
+                  margin: '0 auto',
                   background: 'white',
                   position: 'relative',
                   overflow: 'visible',
-                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                  boxShadow: '0 12px 40px rgba(15, 23, 42, 0.25)',
                   boxSizing: 'border-box',
-                  borderRadius: '1rem'
+                  borderRadius: '32px'
                 }}
               >
-                <ResumeTemplate 
-                  resume={resume} 
-                  template={selectedTemplate}
-                />
+                <ResumeTemplate resume={resume} template={selectedTemplate} />
               </div>
             </div>
           </div>

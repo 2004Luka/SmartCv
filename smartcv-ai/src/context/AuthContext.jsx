@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import api from '../lib/api';
 import Cookies from 'js-cookie';
 
 const API_URL = process.env.VITE_API_URL?.replace(/"/g, '') || 'http://localhost:5000';
@@ -37,7 +38,7 @@ export const AuthProvider = ({ children }) => {
     // If token exists but no user cookie, fetch user from backend
     if (token && !userData) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      axios.get(`${API_URL}/api/user/me`, { withCredentials: true })
+      api.get(`/api/user/me`)
         .then(res => {
           setUser(res.data.user);
           Cookies.set('user', JSON.stringify(res.data.user), { expires: 30, sameSite: 'Lax', path: '/' });
@@ -55,7 +56,7 @@ export const AuthProvider = ({ children }) => {
 
   const getProfile = async () => {
     try {
-      const res = await axios.get(`${API_URL}/api/user/me`, { withCredentials: true });
+      const res = await api.get(`/api/user/me`);
       setUser(res.data.user);
       Cookies.set('user', JSON.stringify(res.data.user), { expires: 30, sameSite: 'Lax', path: '/' });
     } catch (error) {
@@ -70,7 +71,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password, rememberMe = false) => {
     try {
-      const response = await axios.post(`${API_URL}/api/auth/login`, {
+      const response = await api.post(`/api/auth/login`, {
         email,
         password
       });
@@ -93,7 +94,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      const response = await axios.post(`${API_URL}/api/auth/register`, {
+      const response = await api.post(`/api/auth/register`, {
         name,
         email,
         password
@@ -129,8 +130,7 @@ export const AuthProvider = ({ children }) => {
   const updateProfilePicture = async (profilePicture) => {
     if (!user) return;
     try {
-      // Update on backend (but don't wait for backend to return new user)
-      await axios.put(`${API_URL}/api/user/profile-picture`, { profilePicture }, { withCredentials: true });
+      await api.put(`/api/user/profile-picture`, { profilePicture });
     } catch (error) {
       // handle error if needed
     }
@@ -143,7 +143,7 @@ export const AuthProvider = ({ children }) => {
   const updateName = async (name) => {
     if (!user) return;
     try {
-      const res = await axios.put(`${API_URL}/api/user/name`, { name }, { withCredentials: true });
+      const res = await api.put(`/api/user/name`, { name });
       const updatedUser = { ...user, name: res.data.name };
       setUser(updatedUser);
       Cookies.set('user', JSON.stringify(updatedUser), { expires: 30, sameSite: 'Lax', path: '/' });

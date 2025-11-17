@@ -9,6 +9,12 @@ const ForgotPassword = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const inputClass =
+    'w-full rounded-2xl border border-stone-200 bg-white/80 px-4 py-3 text-sm text-stone-900 placeholder:text-stone-400 shadow-sm focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition';
+  const primaryButton =
+    'inline-flex w-full items-center justify-center rounded-2xl bg-emerald-600 px-4 py-3 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 disabled:cursor-not-allowed disabled:opacity-60';
+  const cardClass =
+    'rounded-[32px] border border-stone-200/70 bg-white/95 p-8 shadow-[0_35px_90px_rgba(15,23,42,0.12)] backdrop-blur';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,62 +36,55 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-[90vh] bg-[rgb(var(--color-bg))]">
-      <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="relative isolate min-h-[90vh]">
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute left-4 top-16 h-64 w-64 rounded-full bg-emerald-200/25 blur-[110px]" />
+        <div className="absolute right-6 bottom-0 h-72 w-72 rounded-full bg-stone-200/35 blur-[120px]" />
+      </div>
+      <div className="mx-auto max-w-md px-4 py-12 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-[rgb(var(--color-text))]">Reset password</h2>
-          <p className="mt-3 text-sm sm:text-base text-slate-600">
-            Enter your email address and we'll send you a reset link
+          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-stone-500">Password reset</p>
+          <h2 className="mt-3 text-3xl font-semibold text-stone-900">Send a secure reset link</h2>
+          <p className="mt-2 text-sm text-stone-600 sm:text-base">
+            Enter your account email and we’ll guide you the rest of the way.
           </p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="card">
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="email" className="form-label">
-                  Email address
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  className="input-field"
-                  placeholder="Enter your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-            </div>
+          <div className={cardClass}>
+            <label htmlFor="email" className="text-sm font-semibold text-stone-700">
+              Email address
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              className={`${inputClass} mt-2`}
+              placeholder="you@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
             {message && (
-              <div className="mt-4 rounded-lg bg-green-50 border border-green-200 p-3">
-                <p className="text-sm font-medium text-green-700">{message}</p>
+              <div className="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 shadow-sm">
+                {message}
               </div>
             )}
 
             {error && (
-              <div className="mt-4 form-error-message">
-                <p className="text-sm">{error}</p>
+              <div className="mt-4 rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 shadow-sm">
+                {error}
               </div>
             )}
 
-            <div className="mt-6">
-              <button
-                type="submit"
-                disabled={loading}
-                className="form-submit disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Sending...' : 'Send Reset Link'}
-              </button>
-            </div>
+            <button type="submit" disabled={loading} className={`${primaryButton} mt-6`}>
+              {loading ? 'Sending...' : 'Send reset link'}
+            </button>
 
-            <div className="mt-4 text-center">
-              <Link
-                to="/login"
-                className="text-sm font-medium text-[rgb(var(--color-primary))] hover:text-[rgb(var(--color-primary-hover))] transition-colors duration-200"
-              >
+            <div className="mt-4 text-center text-sm text-stone-600">
+              Remembered your password?{' '}
+              <Link to="/login" className="font-semibold text-emerald-600 transition hover:text-emerald-500">
                 Back to login
               </Link>
             </div>

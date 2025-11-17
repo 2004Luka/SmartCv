@@ -7,6 +7,10 @@ const AIResumeSuggestions = ({ resume, onApplySuggestion }) => {
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState(null);
   const [error, setError] = useState('');
+  const cardClass =
+    'rounded-3xl border border-stone-200/80 bg-white/95 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)]';
+  const primaryButton =
+    'inline-flex items-center justify-center rounded-2xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 disabled:cursor-not-allowed disabled:opacity-60';
 
   const getSuggestions = async () => {
     setLoading(true);
@@ -62,84 +66,79 @@ const AIResumeSuggestions = ({ resume, onApplySuggestion }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">AI-Powered Suggestions</h3>
-        <button
-          onClick={getSuggestions}
-          disabled={loading}
-          className={`px-4 py-2 rounded-md ${
-            loading 
-              ? 'bg-gray-300 cursor-not-allowed' 
-              : 'bg-blue-600 hover:bg-blue-700 text-white'
-          }`}
-        >
-          {loading ? 'Analyzing...' : 'Get Suggestions'}
+    <div className={cardClass}>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-stone-400">AI assist</p>
+          <h3 className="text-lg font-semibold text-stone-900">Suggestions & refinements</h3>
+        </div>
+        <button onClick={getSuggestions} disabled={loading} className={primaryButton}>
+          {loading ? 'Analyzing…' : 'Get suggestions'}
         </button>
       </div>
 
       {error && (
-        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-red-700">{error}</p>
+        <div className="mt-4 rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+          <p>{error}</p>
           {error.includes('quota exceeded') && (
-            <p className="mt-2 text-sm text-red-600">
-              Please check your OpenAI API key and billing details at{' '}
-              <a 
-                href="https://platform.openai.com/account/billing" 
-                target="_blank" 
+            <p className="mt-2 text-xs text-rose-600">
+              Please verify billing on{' '}
+              <a
+                href="https://platform.openai.com/account/billing"
+                target="_blank"
                 rel="noopener noreferrer"
-                className="underline hover:text-red-800"
+                className="underline decoration-rose-400"
               >
                 OpenAI Dashboard
               </a>
+              .
             </p>
           )}
         </div>
       )}
 
       {suggestions && (
-        <div className="space-y-6">
-          {/* Summary Suggestions */}
+        <div className="mt-6 space-y-6">
           {suggestions.summary && (
-            <div className="border rounded-lg p-4">
-              <h4 className="font-medium text-gray-900 mb-2">Summary Improvements</h4>
-              <p className="text-gray-600 mb-3">{suggestions.summary}</p>
+            <div className="rounded-2xl border border-stone-200/70 bg-white/90 p-4">
+              <h4 className="text-sm font-semibold text-stone-900">Summary improvements</h4>
+              <p className="mt-2 text-sm text-stone-600">{suggestions.summary}</p>
               <button
                 onClick={() => handleApplySuggestion('summary', suggestions.summary)}
-                className="text-primary-600 hover:text-primary-700"
+                className="mt-3 text-sm font-semibold text-emerald-600 hover:text-emerald-500"
               >
-                Apply Suggestion
+                Apply suggestion
               </button>
             </div>
           )}
 
-          {/* Experience Suggestions */}
           {suggestions.experience && suggestions.experience.length > 0 && (
-            <div className="border rounded-lg p-4">
-              <h4 className="font-medium text-gray-900 mb-2">Experience Improvements</h4>
-              {suggestions.experience.map((suggestion, index) => (
-                <div key={index} className="mb-3">
-                  <p className="text-gray-600 mb-2">{suggestion}</p>
-                  <button
-                    onClick={() => handleApplySuggestion('experience', suggestion)}
-                    className="text-primary-600 hover:text-primary-700"
-                  >
-                    Apply Suggestion
-                  </button>
-                </div>
-              ))}
+            <div className="rounded-2xl border border-stone-200/70 bg-white/90 p-4">
+              <h4 className="text-sm font-semibold text-stone-900">Experience refinements</h4>
+              <div className="mt-3 space-y-3">
+                {suggestions.experience.map((suggestion, index) => (
+                  <div key={index} className="rounded-2xl bg-stone-50/80 p-3">
+                    <p className="text-sm text-stone-600">{suggestion}</p>
+                    <button
+                      onClick={() => handleApplySuggestion('experience', suggestion)}
+                      className="mt-2 text-sm font-semibold text-emerald-600 hover:text-emerald-500"
+                    >
+                      Apply suggestion
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
-          {/* Skills Suggestions */}
           {suggestions.skills && suggestions.skills.length > 0 && (
-            <div className="border rounded-lg p-4">
-              <h4 className="font-medium text-gray-900 mb-2">Recommended Skills</h4>
-              <div className="flex flex-wrap gap-2 mb-3">
+            <div className="rounded-2xl border border-stone-200/70 bg-white/90 p-4">
+              <h4 className="text-sm font-semibold text-stone-900">Recommended skills</h4>
+              <div className="mt-3 flex flex-wrap gap-2">
                 {suggestions.skills.map((skill, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+                    className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-100"
                   >
                     {skill}
                   </span>
@@ -147,22 +146,21 @@ const AIResumeSuggestions = ({ resume, onApplySuggestion }) => {
               </div>
               <button
                 onClick={() => handleApplySuggestion('skills', suggestions.skills)}
-                className="text-primary-600 hover:text-primary-700"
+                className="mt-3 text-sm font-semibold text-emerald-600 hover:text-emerald-500"
               >
-                Add All Skills
+                Add all skills
               </button>
             </div>
           )}
 
-          {/* Keywords Suggestions */}
           {suggestions.keywords && suggestions.keywords.length > 0 && (
-            <div className="border rounded-lg p-4">
-              <h4 className="font-medium text-gray-900 mb-2">Industry Keywords</h4>
-              <div className="flex flex-wrap gap-2">
+            <div className="rounded-2xl border border-stone-200/70 bg-white/90 p-4">
+              <h4 className="text-sm font-semibold text-stone-900">Industry keywords</h4>
+              <div className="mt-3 flex flex-wrap gap-2">
                 {suggestions.keywords.map((keyword, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
+                    className="inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-amber-100"
                   >
                     {keyword}
                   </span>
